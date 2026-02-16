@@ -47,3 +47,7 @@ struct Player {
 - [Require](./require.md)
 - [Events and Emit](./events-and-emit.md)
 - [Inheritance](./inheritance.md)
+
+## Practice Contracts
+
+- [SimpleWallet](../../contracts/simple-contracts/SimpleWallet.sol) — account creation, deposit, withdraw (uses struct, mapping, require, events, keccak256)
