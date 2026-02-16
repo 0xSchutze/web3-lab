@@ -2,6 +2,8 @@
 
 Practice contracts using basic Solidity concepts.
 
+> ⚠️ These contracts are for learning purposes only. They do not hold real ETH and are not written with production-level security. Built to practice core Solidity concepts — feel free to use them as a starting point.
+
 ## SimpleWallet
 
 A basic wallet contract with account creation, deposit, and withdrawal.
