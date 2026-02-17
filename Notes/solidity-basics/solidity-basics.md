@@ -36,6 +36,29 @@ struct Player {
 }
 ```
 
+### Struct Packing (Gas Optimization)
+
+Smaller uint types (`uint32`, `uint16`) save gas **only inside structs** — group them together:
+
+```solidity
+// ✅ Good — packed, saves gas
+struct Efficient {
+    uint32 a;
+    uint32 b;
+    uint c;
+}
+
+// ❌ Bad — not packed, wastes gas
+struct Wasteful {
+    uint32 a;
+    uint c;
+    uint32 b;
+}
+```
+
+Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` normally.
+
+
 ## Topics
 
 - [Arrays and Push](./arrays-and-push.md)
@@ -47,7 +70,12 @@ struct Player {
 - [Require](./require.md)
 - [Events and Emit](./events-and-emit.md)
 - [Inheritance](./inheritance.md)
+- [Interface](./interface.md)
+- [Constructor and Modifier](./constructor-and-modifer.md)
+- [msg.sender vs tx.origin](./msg.sender-and-tx.origin.md)
+- [Time Units](./time-units.md)
 
 ## Practice Contracts
 
 - [SimpleWallet](../../contracts/simple-contracts/SimpleWallet.sol) — account creation, deposit, withdraw (uses struct, mapping, require, events, keccak256)
+- [SimpleVoting](../../contracts/simple-contracts/SimpleVoting.sol) — NFT creation, voting, deletion (uses nested mapping, modifier, swap & pop)

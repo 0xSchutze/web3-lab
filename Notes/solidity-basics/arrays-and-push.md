@@ -49,3 +49,28 @@ After calling `_addPerson("Jackson", 24)`:
 - `private` — only this contract can call this function
 - `push` — appends a new entry to the end of the array
 - `_name` — underscore prefix is a naming convention for function parameters
+
+## Gas and Struct Packing
+
+**Gas** is the fee you pay for every operation on the blockchain. More storage = more gas = more money. So we optimize structs to use less storage.
+
+Smaller uint types (`uint32`, `uint16`) save gas **only inside structs** — group them together so Solidity packs them into one storage slot:
+
+```solidity
+// ✅ Packed — uint32s are next to each other, fits in one slot
+struct Efficient {
+    uint32 a;
+    uint32 b;
+    uint c;
+}
+
+// ❌ Not packed — uint32s are separated, wastes storage slots
+struct Wasteful {
+    uint32 a;
+    uint c;       // breaks the packing
+    uint32 b;
+}
+```
+
+> [!NOTE]
+> Outside structs, `uint32` costs the **same gas** as `uint256`. Only use smaller types inside structs for optimization.

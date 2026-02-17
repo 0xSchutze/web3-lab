@@ -49,3 +49,19 @@ balances[msg.sender] += 50;
 - Cannot be iterated (no for loop over all keys)
 - Cannot get the length or list of all keys
 - Commonly used with `msg.sender` for ownership and access control
+
+## Nested Mapping
+
+A mapping inside a mapping — useful when tracking two dimensions:
+
+```solidity
+// Track who voted for which NFT
+mapping(address => mapping(uint => bool)) public hasVoted;
+
+// Usage:
+hasVoted[msg.sender][nftIndex] = true;   // Alice voted for NFT #3
+hasVoted[msg.sender][nftIndex];          // did Alice vote for NFT #3?
+```
+
+Use when one key isn't enough — like tracking votes per user per item.
+
