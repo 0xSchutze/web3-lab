@@ -32,3 +32,18 @@ An NFT creation and voting system. Users can create NFTs, vote on them, and dele
 - [require](../../Notes/solidity-basics/require.md) — ownership checks, vote validation
 - swap & pop — array element deletion without gaps
 
+## SimpleTodo
+
+A personal task manager. Users can create, complete, rename, and delete their own tasks.
+
+**Concepts Used:**
+- [struct](../../Notes/solidity-basics/arrays-and-push.md) — `Task` struct with `owner` field
+- [modifier with params](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyTaskOwner(_taskId)` custom guard
+- [function visibility](../../Notes/solidity-basics/function-visibility.md) — `external` for cheaper gas
+- [for loop](../../Notes/solidity-basics/for-loop.md) — scan all tasks to find user's tasks
+- [mapping](../../Notes/solidity-basics/mapping.md) — `taskCount` per address
+- [delete](../../Notes/solidity-basics/arrays-and-push.md) — reset task data without swap & pop
+- [view functions](../../Notes/solidity-basics/return.md) — gas-free task queries
+- [calldata](../../Notes/solidity-basics/storage-and-memory.md) — cheap external string parameters
+
+

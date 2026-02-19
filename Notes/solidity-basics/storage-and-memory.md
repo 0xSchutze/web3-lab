@@ -17,13 +17,24 @@ Creates a temporary **copy** of the data. Changes are lost when the function end
 Player memory player = players[_playerId];
 player.score += 10;  // only modifies the copy, original stays the same
 ```
+## calldata
+
+Like memory but **read-only** and **cheaper**. Used for `external` function parameters — the data comes from outside and cannot be modified.
+
+```solidity
+function changeName(string calldata _newName) external {
+    // _newName cannot be modified, only read
+    zombies[0].name = _newName;  // OK — reading _newName
+}
+```
 
 ## When to Use
 
-| Keyword | Use When | Gas Cost |
-|---------|----------|----------|
-| `storage` | You want to modify the original data | Higher (writes to blockchain) |
-| `memory` | You only need to read or do temporary calculations | Lower (temporary) |
+| Keyword | Use When | Modifiable | Gas Cost |
+|---------|----------|:---:|----------|
+| `storage` | You want to modify the original data | ✅ | Highest (writes to blockchain) |
+| `memory` | You need a temporary copy | ✅ | Medium (temporary) |
+| `calldata` | External function parameters (read-only) | ❌ | Cheapest |
 
 ## Required Usage
 
