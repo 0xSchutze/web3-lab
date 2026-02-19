@@ -80,5 +80,6 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 ## Practice Contracts
 
 - [SimpleWallet](../../contracts/simple-contracts/SimpleWallet.sol) — account creation, deposit, withdraw (uses struct, mapping, require, events, keccak256)
+- [simpleOwnable](../../contracts/simple-contracts/simpleOwnable.sol) — basic ownership pattern (uses constructor, modifier, events)
 - [SimpleVoting](../../contracts/simple-contracts/SimpleVoting.sol) — NFT creation, voting, deletion (uses nested mapping, modifier, swap & pop)
 - [SimpleTodo](../../contracts/simple-contracts/SimpleTodo.sol) — task manager (uses modifier with params, for loop, delete, view)

@@ -19,6 +19,16 @@ A basic wallet contract with account creation, deposit, and withdrawal.
 - [return, view, pure](../../Notes/solidity-basics/return.md) — `getBalance()` as view function
 - [storage and memory](../../Notes/solidity-basics/storage-and-memory.md) — `string memory` parameters
 
+## simpleOwnable
+
+Basic ownership pattern — sets deployer as owner, restricts functions with `onlyOwner` modifier.
+
+**Concepts Used:**
+- [constructor](../../Notes/solidity-basics/constructor-and-modifer.md) — sets owner at deploy
+- [modifier](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyOwner` guard
+- [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `OwnershipTransferred`
+- [msg.sender](../../Notes/solidity-basics/msg.sender.md) — deployer identification
+
 ## SimpleVoting
 
 An NFT creation and voting system. Users can create NFTs, vote on them, and delete their own NFTs.
