@@ -57,3 +57,18 @@ A personal task manager. Users can create, complete, rename, and delete their ow
 - [calldata](../../Notes/solidity-basics/storage-and-memory.md) — cheap external string parameters
 
 
+## SimplePiggyBank
+
+A shared piggy bank. Anyone can deposit ETH, only the owner can withdraw all funds.
+
+**Concepts Used:**
+- [payable](../../Notes/solidity-basics/payable.md) — `deposit()` receives ETH
+- [msg.value](../../Notes/solidity-basics/msg.md) — check how much ETH was sent
+- [withdraw pattern](../../Notes/solidity-basics/payable.md) — `payable(_owner).transfer()`
+- [address(this).balance](../../Notes/solidity-basics/payable.md) — total ETH in contract
+- [mapping](../../Notes/solidity-basics/mapping.md) — `deposits` tracks each address
+- [modifier](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyOwner` guard
+- [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `Deposited`, `Withdrawn`
+- [require](../../Notes/solidity-basics/require.md) — minimum deposit check
+
+

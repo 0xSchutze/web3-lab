@@ -76,6 +76,9 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [Time Units](./time-units.md)
 - [For Loop](./for-loop.md)
 - [Function Visibility](./function-visibility.md)
+- [Payable](./payable.md)
+- [msg Global Variable](./msg.md)
+- [ERC20 and ERC721](./erc20-and-erc721.md)
 
 ## Practice Contracts
 
@@ -83,3 +86,4 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [simpleOwnable](../../contracts/simple-contracts/simpleOwnable.sol) — basic ownership pattern (uses constructor, modifier, events)
 - [SimpleVoting](../../contracts/simple-contracts/SimpleVoting.sol) — NFT creation, voting, deletion (uses nested mapping, modifier, swap & pop)
 - [SimpleTodo](../../contracts/simple-contracts/SimpleTodo.sol) — task manager (uses modifier with params, for loop, delete, view)
+- [SimplePiggyBank](../../contracts/simple-contracts/simplePiggyBank.sol) — shared piggy bank (uses payable, msg.value, withdraw pattern, address(this).balance)
