@@ -65,7 +65,7 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [Hashing and Typecasting](./hashing-and-typecasting.md)
 - [Return, View and Pure](./return.md)
 - [Storage and Memory](./storage-and-memory.md)
-- [msg.sender](./msg.sender.md)
+- [msg Global Variable](./msg.md)
 - [Mapping](./mapping.md)
 - [Require](./require.md)
 - [Events and Emit](./events-and-emit.md)
@@ -77,7 +77,6 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [For Loop](./for-loop.md)
 - [Function Visibility](./function-visibility.md)
 - [Payable](./payable.md)
-- [msg Global Variable](./msg.md)
 - [ERC20 and ERC721](./erc20-and-erc721.md)
 
 ## Practice Contracts

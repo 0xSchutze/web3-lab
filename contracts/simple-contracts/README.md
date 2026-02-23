@@ -12,7 +12,7 @@ A basic wallet contract with account creation, deposit, and withdrawal.
 - [struct](../../Notes/solidity-basics/arrays-and-push.md) — `Account` struct
 - [mapping](../../Notes/solidity-basics/mapping.md) — `addressToId`, `accountCount`
 - [arrays and push](../../Notes/solidity-basics/arrays-and-push.md) — `accounts[]`
-- [msg.sender](../../Notes/solidity-basics/msg.sender.md) — caller identification
+- [msg.sender](../../Notes/solidity-basics/msg.md) — caller identification
 - [require](../../Notes/solidity-basics/require.md) — input validation, access control
 - [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `AccountCreated`, `Deposited`, `Withdrawn`
 - [hashing and typecasting](../../Notes/solidity-basics/hashing-and-typecasting.md) — `keccak256` for ID generation
@@ -27,7 +27,7 @@ Basic ownership pattern — sets deployer as owner, restricts functions with `on
 - [constructor](../../Notes/solidity-basics/constructor-and-modifer.md) — sets owner at deploy
 - [modifier](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyOwner` guard
 - [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `OwnershipTransferred`
-- [msg.sender](../../Notes/solidity-basics/msg.sender.md) — deployer identification
+- [msg.sender](../../Notes/solidity-basics/msg.md) — deployer identification
 
 ## SimpleVoting
 
