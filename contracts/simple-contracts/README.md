@@ -72,3 +72,15 @@ A shared piggy bank. Anyone can deposit ETH, only the owner can withdraw all fun
 - [require](../../Notes/solidity-basics/require.md) — minimum deposit check
 
 
+## SimpleNFT
+
+A basic NFT collection. Mint unique tokens, transfer ownership, and approve other addresses.
+
+**Concepts Used:**
+- [ERC721 Transfer Logic](../../Notes/solidity-basics/erc721-transfer-logic.md) — `transferFrom`, `_transfer`, ownership mapping
+- [ERC20 and ERC721](../../Notes/solidity-basics/erc20-and-erc721.md) — token standards, interface implementation
+- [interface](../../Notes/solidity-basics/interface.md) — `IERC721` interface inheritance
+- [mapping](../../Notes/solidity-basics/mapping.md) — `nftToOwner`, `nftToApproved`, `ownerToCount`
+- [modifier](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyOwnerOf` with parameter
+- [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `Transfer`, `Approval`
+- [require](../../Notes/solidity-basics/require.md) — owner/approved check with `||`

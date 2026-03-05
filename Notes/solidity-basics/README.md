@@ -78,6 +78,8 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [Function Visibility](./function-visibility.md)
 - [Payable](./payable.md)
 - [ERC20 and ERC721](./erc20-and-erc721.md)
+- [ERC721 Transfer Logic](./erc721-transfer-logic.md)
+- [Overflow and Underflow](./overflow.md)
 
 ## Practice Contracts
 
@@ -86,3 +88,4 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [SimpleVoting](../../contracts/simple-contracts/SimpleVoting.sol) — NFT creation, voting, deletion (uses nested mapping, modifier, swap & pop)
 - [SimpleTodo](../../contracts/simple-contracts/SimpleTodo.sol) — task manager (uses modifier with params, for loop, delete, view)
 - [SimplePiggyBank](../../contracts/simple-contracts/simplePiggyBank.sol) — shared piggy bank (uses payable, msg.value, withdraw pattern, address(this).balance)
+- [SimpleNFT](../../contracts/simple-contracts/simpleNFT.sol) — NFT collection (uses ERC721 interface, transferFrom, approve, mapping, modifier)
