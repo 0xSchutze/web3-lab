@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Vault Protocol</title>
+  <meta name="description" content="A secure on-chain treasury vault on Ethereum Sepolia." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Tippy.js Light Theme (CSS) -->
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- SVG Noise Overlay  -->
+  <svg style="display:none;">
+    <filter id="noiseFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+    </filter>
+  </svg>
+
+  <div class="bg-noise"></div>
+
+  <!-- Background Orbs -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── CONNECT SCREEN ─────────────────────────────────────────────── -->
+  <div id="connect-screen" class="container">
+    <div class="connect-wrapper glass-panel anim-enter">
+      <div class="connect-logo">
+        <div class="logo-icon-wrap glow-float">
+          <i class="ph ph-vault"></i>
+        </div>
+        <h1>Mini Vault</h1>
+        <p>Secure on-chain custom treasury</p>
+      </div>
+
+      <div class="connect-card">
+        <div class="network-info">
+          <div class="network-dot"></div>
+          <span>Sepolia Testnet</span>
+        </div>
+        <h2>Connect Wallet</h2>
+        <p class="text-muted">Authenticate to deploy or access your vault</p>
+        <button class="btn btn-primary btn-full tracking-btn" id="connect-btn">
+          <span><i class="ph ph-wallet"></i> Connect MetaMask</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN APP ───────────────────────────────────────────────────── -->
+  <div id="app" class="container" style="display: none;">
+    <!-- Header -->
+    <header class="glass-header anim-enter">
+      <div class="header-logo">
+        <i class="ph-fill ph-shield-check"></i> <span>Mini Vault</span>
+      </div>
+      <div class="header-right">
+        <div class="network-badge">
+          <div class="dot"></div>Sepolia
+        </div>
+        <div class="address-badge interactive" id="switch-account-btn" data-tippy-content="Connect another account">
+          <i class="ph ph-user"></i>
+          <span id="header-address">--</span>
+          <i class="ph ph-caret-down text-muted" style="margin-left: 4px; font-size: 0.8rem;"></i>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-card glass-panel anim-stagger">
+          <div class="stat-header">
+            <i class="ph ph-currency-eth stat-icon eth-color" data-tippy-content="Total ETH deposited by any user"></i>
+            <div class="stat-label">ETH Balance</div>
+          </div>
+          <!-- Empty base element for CountUp to parse format, we feed actual val via MutationObserver -->
+          <div class="stat-value" id="stat-eth">0.0000</div>
+        </div>
+
+        <div class="stat-card glass-panel anim-stagger">
+          <div class="stat-header">
+            <i class="ph ph-buildings stat-icon vault-color"
+              data-tippy-content="Your personal smart contract treasury address"></i>
+            <div class="stat-label">Vault Contract</div>
+          </div>
+          <div class="stat-value mono-text" id="stat-vault">--</div>
+        </div>
+
+        <div class="stat-card glass-panel anim-stagger">
+          <div class="stat-header">
+            <i class="ph ph-crown stat-icon owner-color"
+              data-tippy-content="Wallet possessing admin controls over this vault"></i>
+            <div class="stat-label">Owner</div>
+          </div>
+          <div class="stat-value mono-text" id="stat-owner">--</div>
+        </div>
+
+        <div class="stat-card glass-panel anim-stagger">
+          <div class="stat-header">
+            <i class="ph ph-user-circle stat-icon" style="color: #38bdf8;"
+              data-tippy-content="Your current access level for this vault"></i>
+            <div class="stat-label">Your Role</div>
+          </div>
+          <div class="stat-value" id="stat-role">--</div>
+        </div>
+
+        <div class="stat-card glass-panel anim-stagger">
+          <div class="stat-header">
+            <i class="ph ph-activity stat-icon status-color"
+              data-tippy-content="Current execution state of the smart contract"></i>
+            <div class="stat-label">Status</div>
+          </div>
+          <div class="stat-value" id="stat-paused">--</div>
+        </div>
+      </div>
+
+      <!-- No Vault -->
+      <div id="no-vault-section" class="empty-state glass-panel anim-fadeup" style="display: none;">
+        <div class="empty-icon-wrap glow-float">
+          <i class="ph ph-lock-key"></i>
+        </div>
+        <h2>Create Your Protocol</h2>
+        <p class="text-muted">Deploy a personal on-chain smart contract treasury with one click and take full control.
+        </p>
+        <button class="btn btn-primary btn-lg tracking-btn" id="create-vault-btn">
+          <span><i class="ph ph-rocket-launch"></i> Deploy Vault</span>
+        </button>
+
+        <div class="divider" style="margin: 32px 0 24px 0; border-top: 1px dashed var(--border-light);"></div>
+
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Access Existing Vault</h3>
+        <p class="text-xs text-secondary mb-4">Are you a manager or depositor? Connect to a deployed vault below.</p>
+        <div class="form-group" style="max-width: 320px; margin: 0 auto; text-align: left;">
+          <div class="input-with-icon">
+            <i class="ph ph-buildings"></i>
+            <input type="text" id="external-vault-addr" placeholder="0x..." />
+          </div>
+          <button class="btn btn-secondary btn-full mt-3" id="load-external-btn">
+            Load External Vault
+          </button>
+        </div>
+      </div>
+
+      <!-- Vault Dashboard -->
+      <div id="vault-section" style="display: none;">
+        <!-- Vault Header -->
+        <div class="vault-header-bar glass-panel anim-fadeup">
+          <div class="vault-address-info">
+            <h3>Target Vault</h3>
+            <div class="address-link-wrap">
+              <a id="vault-etherscan-link" href="#" target="_blank" rel="noopener" class="mono-link"
+                data-tippy-content="View contract on Sepolia Etherscan">--</a>
+              <i class="ph ph-arrow-up-right"></i>
+            </div>
+          </div>
+          <div id="pause-status" class="pause-status badge-active">
+            <i class="ph ph-check-circle"></i> Active
+          </div>
+        </div>
+
+        <!-- Tabs (Pill Switcher) -->
+        <div class="tabs-wrapper anim-fadeup">
+          <div class="tabs-container">
+            <div class="tab-indicator" id="tab-indicator"></div>
+            <button class="tab-btn active" data-tab="tab-overview">
+              <i class="ph ph-squares-four"></i> Overview
+            </button>
+            <button class="tab-btn" data-tab="tab-deposit">
+              <i class="ph ph-arrow-down-left"></i> Deposit
+            </button>
+            <button class="tab-btn owner-only" data-tab="tab-withdraw" style="display: none;">
+              <i class="ph ph-arrow-up-right"></i> Withdraw
+            </button>
+            <button class="tab-btn" data-tab="tab-whitelist">
+              <i class="ph ph-list-checks"></i> Whitelist
+            </button>
+            <button class="tab-btn manager-access" data-tab="tab-settings" style="display: none;">
+              <i class="ph ph-gear"></i> Settings
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div class="tab-content active" id="tab-overview">
+          <!-- Guest Notice (Dynamic Visibility) -->
+          <div id="guest-notice" class="card glass-panel anim-tab" style="display: none; border: 1px solid rgba(56, 189, 248, 0.4); margin-bottom: 24px;">
+            <div class="card-title" style="color: #38bdf8;">
+              <i class="ph ph-info"></i> Guest Access Mode
+            </div>
+            <p class="text-secondary text-sm">
+              You do not have administrative privileges for this vault contract. You have read-only access to view its contents and check whether specific token addresses are whitelisted. You may also deposit ETH or whitelisted ERC20 tokens as a contribution or donation. All withdrawal and management functions are restricted to authorized personnel.
+            </p>
+          </div>
+
+          <div class="grid-2">
+            <div class="card glass-panel anim-tab">
+              <div class="card-title">
+                <i class="ph ph-info"></i> Protocol Details
+              </div>
+              <p class="text-secondary line-relaxed">
+                Welcome to your personal on-chain treasury. Anyone can deposit ETH or whitelisted ERC20 tokens into this
+                smart contract. Only the private key of the assigned owner can initiate withdrawals. Authorized addresses
+                can manage the whitelist and emergency pause state.
+              </p>
+              <div class="divider"></div>
+              <div class="footer-note">
+                <i class="ph ph-broadcast"></i> Deployed on Sepolia Network •
+                <a href="https://sepolia.etherscan.io/address/0xfc5A57AB765Da9980d1E6E244F173BF6AfC3f286" target="_blank"
+                  class="accent-link" data-tippy-content="Verify Factory Logic">Inspect Factory <i
+                    class="ph ph-arrow-up-right"></i></a>
+              </div>
+            </div>
+
+            <!-- Global Token Scanner -->
+            <div class="card glass-panel anim-tab">
+              <div class="card-title">
+                <i class="ph ph-magnifying-glass"></i> Vault Token Scanner
+              </div>
+              <p class="text-secondary text-sm mb-4">
+                Check the current vault balance of any ERC20 token contract.
+              </p>
+              <div class="form-group">
+                <label>Token Contract Address</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-hash"></i>
+                  <input type="text" id="global-token-addr" placeholder="0x..." />
+                </div>
+              </div>
+              <button class="btn btn-secondary btn-full mt-4" id="global-check-token">
+                <i class="ph ph-radar"></i> Scan Balance
+              </button>
+            </div>
+          </div>
+
+          <!-- Context Switcher -->
+          <div class="card glass-panel anim-tab mt-4" style="grid-column: 1 / -1;">
+            <div class="card-title">
+              <i class="ph ph-swap"></i> Context Switcher
+            </div>
+            <p class="text-secondary text-sm mb-4">
+              Access the vault you have deployed or jump into external vaults as an authorized manager/depositor.
+            </p>
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+              <button class="btn btn-secondary tracking-btn" id="return-my-vault-btn" style="flex: 1; min-width: 200px; display: none;">
+                <span><i class="ph ph-house"></i> Home Vault</span>
+              </button>
+              
+              <div class="form-group" style="flex: 2; min-width: 250px; margin-bottom: 0;">
+                <div class="input-with-icon">
+                  <i class="ph ph-buildings"></i>
+                  <input type="text" id="dashboard-external-addr" placeholder="Target Vault 0x..." style="width: 100%; border: none; background: transparent; color: white; padding-left: 36px; padding-right: 12px; border-radius: 8px; outline: none; box-shadow: none;" />
+                </div>
+              </div>
+              
+              <button class="btn btn-primary tracking-btn" id="dashboard-load-external-btn" style="flex: 1; min-width: 150px;">
+                <span>Load Vault</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Tab: Deposit -->
+        <div class="tab-content" id="tab-deposit">
+          <div class="grid-2">
+            <!-- ETH Deposit -->
+            <div class="card glass-panel anim-tab">
+              <div class="card-title">
+                <i class="ph ph-currency-eth"></i> Deposit ETH
+              </div>
+              <div class="form-group">
+                <label>Amount (ETH)</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-coins"></i>
+                  <input type="number" id="deposit-eth-amount" placeholder="0.01" min="0.01" step="0.01" />
+                </div>
+              </div>
+              <p class="input-hint">Minimum deposit is 0.01 ETH</p>
+              <button class="btn btn-primary btn-full mt-4 tracking-btn" id="deposit-eth-btn">
+                <span>Deposit ETH</span>
+              </button>
+            </div>
+
+            <!-- Token Deposit -->
+            <div class="card glass-panel anim-tab">
+              <div class="card-title">
+                <i class="ph ph-coin"></i> Deposit ERC20 Token
+              </div>
+              <div class="form-group">
+                <label>Token Address</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-hash"></i>
+                  <input type="text" id="deposit-token-address" placeholder="0x..." />
+                </div>
+              </div>
+              <div class="form-group mt-3">
+                <label>Amount</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-coins"></i>
+                  <input type="number" id="deposit-token-amount" placeholder="100" min="0" />
+                </div>
+              </div>
+              <div class="btn-group mt-4">
+                <button class="btn btn-secondary flex-1" id="approve-token-btn">
+                  1. Approve
+                </button>
+                <button class="btn btn-primary flex-1 tracking-btn" id="deposit-token-btn">
+                  <span>2. Deposit</span>
+                </button>
+              </div>
+              <p class="input-hint mt-2">Tokens must be whitelisted prior to deposit.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Withdraw (owner only) -->
+        <div class="tab-content" id="tab-withdraw">
+          <div class="grid-2">
+            <!-- ETH Withdraw -->
+            <div class="card glass-panel owner-only anim-tab">
+              <div class="card-title">
+                <i class="ph ph-currency-eth"></i> Withdraw ETH
+              </div>
+              <div class="form-group">
+                <label>Amount (ETH)</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-coins"></i>
+                  <input type="number" id="withdraw-eth-amount" placeholder="0.01" min="0.01" step="0.01" />
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full mt-4 tracking-btn" id="withdraw-eth-btn">
+                <span>Withdraw ETH</span>
+              </button>
+            </div>
+
+            <!-- Token Withdraw -->
+            <div class="card glass-panel owner-only anim-tab">
+              <div class="card-title">
+                <i class="ph ph-coin"></i> Withdraw ERC20 Token
+              </div>
+              <div class="form-group">
+                <label>Token Address</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-hash"></i>
+                  <input type="text" id="withdraw-token-address" placeholder="0x..." />
+                </div>
+              </div>
+              <div class="form-group mt-3">
+                <label>Amount</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-coins"></i>
+                  <input type="number" id="withdraw-token-amount" placeholder="100" min="0" />
+                </div>
+              </div>
+              <div class="btn-group mt-4">
+                <button class="btn btn-secondary flex-1" id="check-token-btn">
+                  <i class="ph ph-magnifying-glass"></i> Check
+                </button>
+                <button class="btn btn-primary flex-1 tracking-btn" id="withdraw-token-btn">
+                  <span>Withdraw</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Whitelist -->
+        <div class="tab-content" id="tab-whitelist">
+          <div class="card glass-panel max-w-lg mx-auto anim-tab">
+            <div class="card-title">
+              <i class="ph ph-list-checks"></i> Token Whitelist
+            </div>
+            <p class="text-secondary text-sm mb-4">
+              Only whitelisted smart contracts are accepted for deposits. The owner and authorized managers control this
+              registry.
+            </p>
+            <div class="form-group">
+              <label>Token Contract Address</label>
+              <div class="input-with-icon">
+                <i class="ph ph-hash"></i>
+                <input type="text" id="whitelist-token-input" placeholder="0x..." />
+              </div>
+            </div>
+            <div class="btn-group flex-wrap mt-4">
+              <button class="btn btn-secondary" id="check-whitelist-btn">
+                <i class="ph ph-magnifying-glass"></i> Verify
+              </button>
+              <button class="btn btn-primary manager-access tracking-btn" id="add-whitelist-btn">
+                <span><i class="ph ph-plus"></i> Whitelist Token</span>
+              </button>
+              <button class="btn btn-danger manager-access" id="remove-whitelist-btn">
+                <i class="ph ph-trash"></i> Revoke
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Settings (owner only) -->
+        <div class="tab-content" id="tab-settings">
+          <div class="grid-2">
+            <!-- Authorized Addresses -->
+            <div class="card glass-panel owner-only anim-tab">
+              <div class="card-title">
+                <i class="ph ph-users"></i> Access Management
+              </div>
+              <p class="input-hint mb-4"
+                data-tippy-content="Delegates bypass the owner check for whitelist and pause ops">Grant up to 3
+                addresses permissions to manage the whitelist and pause the contract.</p>
+              <div class="form-group">
+                <label>Delegate Address</label>
+                <div class="input-with-icon">
+                  <i class="ph ph-user-plus"></i>
+                  <input type="text" id="authorize-address-input" placeholder="0x..." />
+                </div>
+              </div>
+              <div class="btn-group mt-4">
+                <button class="btn btn-primary flex-1 tracking-btn" id="approve-addr-btn">
+                  <span>Authorize</span>
+                </button>
+                <button class="btn btn-danger flex-1" id="remove-addr-btn">
+                  Revoke
+                </button>
+              </div>
+            </div>
+
+            <!-- Emergency & Ownership -->
+            <div class="flex-col gap-4">
+              <div class="card glass-panel manager-access danger-zone anim-tab">
+                <div class="card-title text-red"
+                  data-tippy-content="Freezes all deposits and withdrawals protecting the vault">
+                  <i class="ph ph-warning-octagon"></i> Emergency Controls
+                </div>
+                <div class="btn-group mt-2">
+                  <button class="btn btn-danger flex-1" id="pause-btn">
+                    <i class="ph ph-pause"></i> Pause Contract
+                  </button>
+                  <button class="btn btn-secondary flex-1" id="unpause-btn">
+                    <i class="ph ph-play"></i> Unpause
+                  </button>
+                </div>
+              </div>
+
+              <div class="card glass-panel owner-only danger-zone anim-tab">
+                <div class="card-title text-red">
+                  <i class="ph ph-key"></i> Transfer Rule
+                </div>
+                <div class="form-group mt-2">
+                  <label>New Owner Address</label>
+                  <div class="input-with-icon">
+                    <i class="ph ph-arrow-fat-lines-right"></i>
+                    <input type="text" id="new-owner-input" placeholder="0x..." />
+                  </div>
+                </div>
+                <button class="btn btn-danger btn-full mt-3" id="transfer-ownership-btn">
+                  <i class="ph ph-warning"></i> Execute Transfer
+                </button>
+                <p class="text-xs text-red mt-2 text-center opacity-70">Warning: Irreversible action.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end vault-section -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer anim-fadeup" style="animation-delay: 0.5s;">
+      <div class="creator-info">
+        Developed with <i class="ph-fill ph-heart text-red glow-heart"></i> by <span class="creator-name">schutze</span>
+      </div>
+      <div class="social-links">
+        <a href="https://github.com/0xschutze" target="_blank" rel="noopener" class="social-btn"
+          data-tippy-content="GitHub Profile">
+          <i class="ph ph-github-logo"></i>
+        </a>
+        <a href="https://x.com/0xSchutze" target="_blank" rel="noopener" class="social-btn"
+          data-tippy-content="X (Twitter) Profile">
+          <i class="ph ph-x-logo"></i>
+        </a>
+      </div>
+    </footer>
+  </div>
+  <!-- end app -->
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-wrapper"></div>
+
+  <!-- Core Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="config.js"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Educational Warning Badge -->
+  <div class="edu-badge" style="opacity: 0; animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.5s;">
+    <div class="edu-icon"><i class="ph ph-warning-octagon"></i></div>
+    <div class="edu-text">
+      <strong>Educational & Experimental</strong>
+      <p>This protocol is unaudited and built for testing. Bugs and vulnerabilities may exist. Do NOT use with real mainnet funds.</p>
+    </div>
+  </div>
+
+  <!-- UI & Application Modules -->
+  <script src="ui.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
