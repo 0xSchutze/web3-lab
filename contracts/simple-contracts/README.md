@@ -84,3 +84,14 @@ A basic NFT collection. Mint unique tokens, transfer ownership, and approve othe
 - [modifier](../../Notes/solidity-basics/constructor-and-modifer.md) — `onlyOwnerOf` with parameter
 - [events and emit](../../Notes/solidity-basics/events-and-emit.md) — `Transfer`, `Approval`
 - [require](../../Notes/solidity-basics/require.md) — owner/approved check with `||`
+
+## SimpleDex
+
+A single-pair Automated Market Maker (AMM) implementing the Constant Product Formula ($x * y = k$). Users can add liquidity and swap tokens with slippage and a 0.3% fee built into the smart contract execution.
+
+**Concepts Used:**
+- [Constant Product AMM Math](../../Notes/solidity-basics/math.md) — $x * y = k$ and `Math.sqrt` / `Math.min`
+- [Fee-on-Transfer Protection](../../Notes/solidity-basics/erc20-and-erc721.md) — actual balance checks via `balanceOf(address(this))`
+- [Ternary Operator](../../Notes/solidity-basics/ternary.md) — gas optimization (`condition ? true : false`)
+- [Implicit Returns](../../Notes/solidity-basics/return.md) — named returns saving gas
+- [ERC20 Interface](../../Notes/solidity-basics/interface.md) — cross-contract logic and `transferFrom`

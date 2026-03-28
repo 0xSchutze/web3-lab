@@ -89,3 +89,4 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [SimpleTodo](../../contracts/simple-contracts/SimpleTodo.sol) — task manager (uses modifier with params, for loop, delete, view)
 - [SimplePiggyBank](../../contracts/simple-contracts/simplePiggyBank.sol) — shared piggy bank (uses payable, msg.value, withdraw pattern, address(this).balance)
 - [SimpleNFT](../../contracts/simple-contracts/simpleNFT.sol) — NFT collection (uses ERC721 interface, transferFrom, approve, mapping, modifier)
+- [SimpleDex](../../contracts/simple-contracts/simpleDex.sol) — Automated Market Maker (uses CPMM math, ternary operators, balance tracking, fee calculations)
