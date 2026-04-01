@@ -20,13 +20,13 @@ The protocol consists of two contracts:
 
 ## Features
 
-- ✅ ETH and ERC20 token deposits
-- ✅ Token whitelist (only approved tokens accepted)
-- ✅ Pause / unpause functionality for emergencies
-- ✅ Authorized address management (max 3 per vault)
-- ✅ Ownership transfer with automatic authorization cleanup
-- ✅ One vault per address enforced by factory
-- ✅ NatSpec documentation
+- ETH and ERC20 token deposits
+- Token whitelist (only approved tokens accepted)
+- Pause / unpause functionality for emergencies
+- Authorized address management (max 3 per vault)
+- Ownership transfer with automatic authorization cleanup
+- One vault per address enforced by factory
+- NatSpec documentation
 
 ---
 
@@ -55,8 +55,8 @@ test/                   # Tests (WIP)
 ### Install
 
 ```bash
-git clone https://github.com/0xSchutze/mini-vault-protocol
-cd mini-vault-protocol
+git clone https://github.com/0xSchutze/web3-lab.git
+cd web3-lab/contracts/mini-vault-protocol
 forge install
 ```
 
@@ -117,12 +117,12 @@ forge script script/DeployVault.s.sol:DeployVaultFactory \
 
 A full **Vanilla JS / GSAP** frontend is included in the `frontend/` directory to interact with the deployed vaults.
 
-### 🌐 Live Demo & Smart Contracts
+### Live Demo & Smart Contracts
 The currently deployed version of the protocol runs on Sepolia and can be accessed directly without any installation:
 - **[View Live on GitHub Pages](https://0xschutze.github.io/web3-lab/contracts/mini-vault-protocol/frontend/index.html)** *(Example Link)*
 - **[View VaultFactory on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xfc5A57AB765Da9980d1E6E244F173BF6AfC3f286)**
 
-### 💻 Running Locally
+### Running Locally
 To run the front-end interface on your local machine, simply serve the static files:
 ```bash
 cd frontend
@@ -131,7 +131,7 @@ npx serve .
 ```
 By default, the UI will connect to the official Sepolia Factory contract deployed by the author.
 
-### 🔧 Connecting Custom Smart Contracts
+### Connecting Custom Smart Contracts
 If you modify the smart contracts and deploy your own versions to a network (like Anvil, Sepolia, or Mainnet), you must update the application to point to your new contracts:
 1. Open `frontend/config.js`
 2. Update the `FACTORY_ADDRESS` variable with your newly deployed VaultFactory address.
