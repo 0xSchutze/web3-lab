@@ -8,6 +8,8 @@ Personal learning repository. Documenting my path from Solidity fundamentals to 
 
 The goal is to master development first, then transition into security. Every protocol here was built to understand something specific at the implementation level, not to ship a product.
 
+> **Note:** Folders are numbered chronologically (01 → 03) to demonstrate the learning progression, from foundational concepts to complex protocol architecture.
+
 | Project | Focus | Key Concepts |
 |---|---|---|
 | [01_simple-contracts](./contracts/01_simple-contracts) | Solidity fundamentals | Structs, mappings, modifiers, events, ERC20/ERC721 basics |
