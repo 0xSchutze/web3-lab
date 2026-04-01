@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-DEX / Web3 Security Lab</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <!-- Core External Libraries -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <!-- Global Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Token Image Upload Custom Modal -->
+    <div id="imageUploadModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Asset Identity Verification</h3>
+                <button class="close-modal" id="closeImageModal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem;">
+                <p class="subtitle" id="imageModalMessage" style="margin-bottom: 1rem; color: var(--accent);">Please authorize a visual identity for this protocol component.</p>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="externalLogoFile" accept="image/*" class="file-input">
+                    <label for="externalLogoFile" class="file-label" id="externalLogoLabel">
+                        <span class="upload-icon"><i class="ri-camera-fill"></i></span>
+                        <span id="externalLogoText">Click to Browse PC</span>
+                    </label>
+                </div>
+                <div style="text-align: center;">
+                    <img id="externalLogoPreview" src="" style="display:none; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-glow); margin: 1rem auto;"/>
+                </div>
+                <button id="btnConfirmImageUpload" class="btn-action mt-4" disabled>Sponsor Asset Globally</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modals -->
+    <div id="pairModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Liquidity Pool</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-search">
+                <input type="text" id="pairSearchInput" placeholder="Search pair contract or asset symbol" class="input-full">
+            </div>
+            <div class="modal-list" id="modalPairList">
+                <p class="empty-text">Loading isolated active pools...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Selection Modal Overlay -->
+    <div id="tokenModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select a Token</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-search">
+                <input type="text" id="modalSearchInput" placeholder="Search name or paste address (0x...)" class="input-full">
+            </div>
+            <div class="modal-list" id="modalTokenList">
+                <p class="empty-text">Loading immutable registry...</p>
+                <!-- Dynamically populated via ui-frontend.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Pending Overlay (V6) -->
+    <div id="txModal" class="modal-overlay" style="z-index: 9999; backdrop-filter: blur(8px);">
+        <div class="modal-content" style="text-align: center; background: rgba(13,17,28,0.95); border-color: var(--accent); padding: 3rem 2rem;">
+            <div class="tx-spinner" style="margin: 0 auto 1.5rem auto;"></div>
+            <h3 style="color: var(--text-light); font-size: 1.4rem;">Transaction Pending</h3>
+            <p id="txModalText" style="color: var(--text-muted); margin-top: 0.5rem;">Confirm this execution in your Web3 wallet...</p>
+        </div>
+    </div>
+
+    <!-- High Slippage Warning Modal -->
+    <div id="warningModal" class="modal-overlay" style="z-index: 10000; backdrop-filter: blur(8px);">
+        <div class="modal-content" style="text-align: center; background: rgba(13,17,28,0.95); border-color: #ef4444; padding: 3rem 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--warning);"><i class="ri-error-warning-fill"></i></div>
+            <h3 style="color: #ef4444; font-size: 1.4rem;">Extreme Price Impact</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 2rem;">
+                The targeted liquidity pool is nearly depleted. You will receive an amount approaching zero in return.<br><br>Are you absolutely sure you want to execute this trade?
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="btnCancelWarning" class="btn-action" style="flex:1;">Cancel Trade</button>
+                <button id="btnConfirmWarning" class="btn-primary" style="flex:1; background: #ef4444; border-color: #b91c1c;">Execute Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset Detail Inspector Modal -->
+    <div id="detailModal" class="modal-overlay" style="z-index: 9998; backdrop-filter: blur(6px);">
+        <div class="modal-content" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3 id="detailModalTitle">Asset Details</h3>
+                <button class="close-modal" id="closeDetailModal">&times;</button>
+            </div>
+            <div id="detailModalBody" style="padding: 0 1.5rem 1.5rem; overflow-y: auto; max-height: 65vh;">
+                <p class="empty-text">Loading on-chain intelligence...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Crop Modal -->
+    <div id="cropModal" class="modal-overlay" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Crop Token Logo</h3>
+                <button class="close-modal" id="closeCropModal">&times;</button>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem;">
+                <div id="cropContainer" class="crop-container">
+                    <canvas id="cropCanvas" width="320" height="320"></canvas>
+                    <div class="crop-circle-overlay"></div>
+                </div>
+                <div class="crop-controls">
+                    <label style="font-size:0.75rem; color:var(--text-muted);">Zoom</label>
+                    <input type="range" id="cropZoom" min="1" max="3" step="0.05" value="1" class="crop-slider">
+                </div>
+                <button class="btn-action" id="btnCropConfirm" style="margin-top:0.75rem;">Confirm Crop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Shell -->
+    <div class="app-layout">
+        
+        <!-- Sidebar Dashboard -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="Mini-DEX" style="width:32px;height:32px;border-radius:8px;object-fit:cover;">
+                    <h1>MINI DEX</h1>
+                </div>
+            </div>
+            
+            <div class="sidebar-module">
+                <h3>Your Wallet Assets</h3>
+                <div id="sidebarWalletAssets" class="asset-container">
+                    <p class="empty-state">Authenticate to scan ledger</p>
+                </div>
+            </div>
+
+            <div class="sidebar-module">
+                <h3>Your Liquidity Pairs</h3>
+                <div id="sidebarUserPairs" class="asset-container">
+                    <p class="empty-state">Awaiting registry sync</p>
+                </div>
+            </div>
+
+            <div class="sidebar-module">
+                <h3>Recent Activity</h3>
+                <div id="sidebarActivity" class="asset-container">
+                    <p class="empty-state">No transactions yet</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Execution Context -->
+        <div class="main-workspace">
+            
+            <nav class="topbar">
+                <div class="status-indicator" id="networkStatus">
+                    <span class="dot red"></span>
+                    <span class="text">Disconnected</span>
+                </div>
+                <div class="wallet-controls" style="display: flex; gap: 0.5rem;">
+                    <button id="btnConnect" class="btn-primary">Connect Wallet</button>
+                    <button id="btnDisconnect" class="btn-action" style="display: none; padding: 0.5rem 0.8rem; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; width: auto;" title="Disconnect Address"><i class="ri-logout-box-r-line"></i></button>
+                </div>
+            </nav>
+
+            <div class="workspace-container">
+                <!-- Navigation Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-target="swap-panel">Swap</button>
+                    <button class="tab-btn" data-target="pool-panel">Pool</button>
+                    <button class="tab-btn" data-target="launchpad-panel">Launchpad</button>
+                    <button class="tab-btn" data-target="explorer-panel">Explorer</button>
+                </div>
+
+                <!-- AMM Swap Execution -->
+                <section id="swap-panel" class="panel active">
+                    <div class="panel-header">
+                        <h2>Router Execution</h2>
+                        <p class="subtitle">Deploy atomic swaps across verified constant-product pools</p>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <div class="input-card">
+                            <label>Origin Asset (Token In)</label>
+                            <button class="btn-select-token full-width" id="btnSelectTokenIn">
+                                <span class="token-symbol">Select Origin Asset</span>
+                                <span class="chevron"><i class="ri-arrow-down-s-line"></i></span>
+                            </button>
+                        </div>
+                        <div class="input-card mt-2">
+                            <label>Computational Amount</label>
+                            <input type="number" id="swapAmountIn" placeholder="0.0" class="input-amount window-width">
+                            <div id="swapQuoteResult" style="text-align: right; color: var(--accent); font-size: 0.85rem; margin-top: 0.5rem; display: none;">Estimated Output: 0.00</div>
+                        </div>
+
+                        <div class="swap-icon" style="margin: 1rem 0;">
+                            <span><i class="ri-arrow-down-line"></i></span>
+                        </div>
+
+                        <div class="input-card">
+                            <label>Destination Asset (Token Out)</label>
+                            <button class="btn-select-token full-width" id="btnSelectTokenOut">
+                                <span class="token-symbol">Select Destination Asset</span>
+                                <span class="chevron"><i class="ri-arrow-down-s-line"></i></span>
+                            </button>
+                        </div>
+                        
+                        <p id="swapRouteStatus" class="subtitle" style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-weight: 500;">Please select assets to discover computational route...</p>
+                    </div>
+
+                    <div class="panel-footer mt-2">
+                        <div class="slippage-info">
+                            <span>Slippage Tolerance</span>
+                            <span>Auto (0.5%)</span>
+                        </div>
+                        <button id="btnSwap" class="btn-action mt-2" disabled>Execute Route</button>
+                    </div>
+                </section>
+
+                <!-- Liquidity Aggregation -->
+                <section id="pool-panel" class="panel">
+                    <div class="panel-header">
+                        <h2>Liquidity Pool</h2>
+                        <p class="subtitle">Instantiate pairs & deposit underlying assets</p>
+                    </div>
+                    
+                    <div class="tabs sub-tabs" style="margin-bottom: 2rem;">
+                        <button class="sub-tab-btn active" data-target="create-pair">Instantiate Pair</button>
+                        <button class="sub-tab-btn" data-target="add-liquidity">Provide Liquidity</button>
+                        <button class="sub-tab-btn" data-target="remove-liquidity">Extract Liquidity</button>
+                    </div>
+
+                    <div id="create-pair" class="sub-panel active">
+                        <div class="input-card mt-2">
+                            <label>Asset A</label>
+                            <button class="btn-select-token full-width" id="btnSelectFactory0">
+                                <span class="token-symbol">Select Asset A</span>
+                                <span class="chevron"><i class="ri-arrow-down-s-line"></i></span>
+                            </button>
+                        </div>
+                        <div class="input-card mt-4">
+                            <label>Asset B</label>
+                            <button class="btn-select-token full-width" id="btnSelectFactory1">
+                                <span class="token-symbol">Select Asset B</span>
+                                <span class="chevron"><i class="ri-arrow-down-s-line"></i></span>
+                            </button>
+                        </div>
+                        <button id="btnCreatePair" class="btn-action mt-4" disabled>Instantiate Factory Proxy</button>
+                    </div>
+
+                    <div id="add-liquidity" class="sub-panel" style="display: none;">
+                        <div class="input-card mt-2">
+                            <label>Target Liquidity Pool</label>
+                            <button class="btn-select-token full-width" id="btnSelectPool">
+                                <span class="token-symbol">Select Active Pair</span>
+                                <span class="chevron"><i class="ri-arrow-down-s-line"></i></span>
+                            </button>
+                        </div>
+                        <div class="split-inputs mt-4">
+                            <div class="input-card flex-1">
+                                <label id="labelPoolAmt0">Asset A Qty</label>
+                                <input type="number" id="poolAmount0" placeholder="0.0" class="input-amount window-width" disabled>
+                                <div id="poolRatioInfoA" style="font-size: 0.75rem; color: var(--text-muted); margin-top:0.4rem; text-align:right;"></div>
+                            </div>
+                            <div class="input-card flex-1">
+                                <label id="labelPoolAmt1">Asset B Qty</label>
+                                <input type="number" id="poolAmount1" placeholder="0.0" class="input-amount window-width" disabled>
+                                <div id="poolRatioInfoB" style="font-size: 0.75rem; color: var(--text-muted); margin-top:0.4rem; text-align:right;"></div>
+                            </div>
+                        </div>
+                        <button id="btnMintLiquidity" class="btn-action mt-4" disabled>Commit Liquidity Payload</button>
+                    </div>
+
+                    <!-- Remove Liquidity Panel -->
+                    <div id="remove-liquidity" class="sub-panel" style="display: none;">
+                        <button class="selector-btn" id="btnSelectPoolRemove">
+                            <span class="token-symbol">Select Active LP Vault</span>
+                            <span><i class="ri-arrow-down-s-line"></i></span>
+                        </button>
+
+                        <div class="input-card mt-4" id="removeLiquidityCard" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="margin:0;">Burn Quantity (LP Tokens)</label>
+                                <span id="maxLpBalance" style="cursor: pointer; color: var(--accent); font-size: 0.8rem; text-decoration: underline;">Balance: 0.00</span>
+                            </div>
+                            <input type="number" id="removeLpAmount" placeholder="0.0" class="input-amount window-width">
+                            
+                            <div style="margin-top: 1rem; border-top: 1px solid var(--border-dim); padding-top: 1rem;">
+                                <p style="font-size:0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Estimated Extraction (Based on global ratio):</p>
+                                <div style="display:flex; justify-content: space-between; font-family: monospace; color: var(--text-light); font-size: 1rem;">
+                                    <span id="removeEstA">0.00 TokenA</span>
+                                    <span id="removeEstB">0.00 TokenB</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="btnRemoveLiquidity" class="btn-action mt-4" disabled>Burn LP & Extract Assets</button>
+                    </div>
+                </section>
+
+                <!-- ERC-20 Factory Engine -->
+                <section id="launchpad-panel" class="panel">
+                    <div class="panel-header">
+                        <h2>Token Launchpad</h2>
+                        <p class="subtitle">Deploy verified ERC-20 smart contracts</p>
+                    </div>
+                    
+                    <div class="form-group mt-2">
+                        <label>Asset Identity (Name)</label>
+                        <input type="text" id="launchName" placeholder="e.g. Wrapped Ether" class="input-full">
+                    </div>
+                    <div class="split-inputs mt-4">
+                        <div class="form-group flex-1">
+                            <label>Ticker (Symbol)</label>
+                            <input type="text" id="launchSymbol" placeholder="e.g. WETH" class="input-full">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>Max Supply (Cap: 1T)</label>
+                            <input type="number" id="launchSupply" placeholder="1000000" class="input-full">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label>Decentralized Logo Resource (Local Encrypted Upload)</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="launchLogoFile" accept="image/*" class="file-input">
+                            <label for="launchLogoFile" class="file-label" id="launchLogoLabel">
+                                <span class="upload-icon"><i class="ri-camera-fill"></i></span>
+                                <span id="launchLogoText">Select Image from PC (Auto-Base64 Compress)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer mt-4">
+                        <button id="btnDeployToken" class="btn-action launch-btn" disabled>Compile & Deploy Artifact</button>
+                    </div>
+                </section>
+
+                <!-- Global Registry Explorer -->
+                <section id="explorer-panel" class="panel">
+                    <div class="panel-header">
+                        <h2>Global Explorer</h2>
+                        <p class="subtitle">Decentralized Asset & Pool Directory</p>
+                    </div>
+                    
+                    <div class="explorer-section mt-4">
+                        <h3 class="mini-title">Registered Pools (LPs)</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <input type="text" id="explorerPairSearch" placeholder="Search pairs by Address or Symbol..." class="input-full" style="background: rgba(0,0,0,0.3);">
+                        </div>
+                        <div class="explorer-grid" id="explorerPairsGrid">
+                            <p class="empty-state window-width" style="grid-column: 1/-1;">Awaiting matrix synchronization...</p>
+                        </div>
+                    </div>
+
+                    <div class="explorer-section mt-4">
+                        <h3 class="mini-title">Verified Smart Contracts (ERC20)</h3>
+                        <div style="margin-bottom: 1rem;">
+                            <input type="text" id="explorerTokenSearch" placeholder="Search tokens by Name, Symbol, or 0x... Address" class="input-full" style="background: rgba(0,0,0,0.3);">
+                        </div>
+                        <div class="explorer-grid" id="explorerTokensGrid">
+                            <p class="empty-state window-width" style="grid-column: 1/-1;">Awaiting matrix synchronization...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Web3 & Database Extensions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.10.0/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Ethers.js & UI Logic -->
+    <script src="js/config.js?v=8.5"></script>
+    <script src="js/registry.js?v=8.5"></script>
+    <script src="js/web3-backend.js?v=8.5"></script>
+    <script src="js/ui-frontend.js?v=8.5"></script>
+    <script src="js/visual.js?v=8.5"></script>
+</body>
+</html>
