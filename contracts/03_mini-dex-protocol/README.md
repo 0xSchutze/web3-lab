@@ -11,7 +11,7 @@
 
 A routerless Automated Market Maker (AMM) and permissionless token Launchpad, built from scratch using Foundry and Ethers.js v6. Developed as part of a self-directed study into DeFi primitives, constant product mathematics, and LP mechanics.
 
-**Live Demo:** [0xschutze.github.io/web3-lab/contracts/mini-dex-protocol/frontend](https://0xschutze.github.io/web3-lab/contracts/mini-dex-protocol/frontend)
+**Live Demo:** [0xschutze.github.io/web3-lab/contracts/03_mini-dex-protocol/frontend](https://0xschutze.github.io/web3-lab/contracts/03_mini-dex-protocol/frontend)
 
 <p align="center">
   <img src="frontend/assets/preview.png" alt="Mini-DEX Interface Preview" width="800" />

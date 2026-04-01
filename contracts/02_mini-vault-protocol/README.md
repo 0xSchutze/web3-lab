@@ -56,7 +56,7 @@ test/                   # Tests (WIP)
 
 ```bash
 git clone https://github.com/0xSchutze/web3-lab.git
-cd web3-lab/contracts/mini-vault-protocol
+cd web3-lab/contracts/02_mini-vault-protocol
 forge install
 ```
 
@@ -119,7 +119,7 @@ A full **Vanilla JS / GSAP** frontend is included in the `frontend/` directory t
 
 ### Live Demo & Smart Contracts
 The currently deployed version of the protocol runs on Sepolia and can be accessed directly without any installation:
-- **[View Live on GitHub Pages](https://0xschutze.github.io/web3-lab/contracts/mini-vault-protocol/frontend/index.html)** *(Example Link)*
+- **[View Live on GitHub Pages](https://0xschutze.github.io/web3-lab/contracts/02_mini-vault-protocol/frontend/index.html)** *(Example Link)*
 - **[View VaultFactory on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xfc5A57AB765Da9980d1E6E244F173BF6AfC3f286)**
 
 ### Running Locally
