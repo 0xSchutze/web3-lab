@@ -1,0 +1,6 @@
+# Foundry build artifacts
+out/
+cache/
+
+# Foundry dependencies (reinstall via forge install)
+lib/
