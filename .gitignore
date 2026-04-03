@@ -1,0 +1,7 @@
+# Foundry build artifacts
+out/
+cache/
+lib/
+
+# Foundry lock
+foundry.lock
