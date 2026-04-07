@@ -16,6 +16,7 @@ The goal is to master development first, then transition into security. Every pr
 | [02_mini-vault-protocol](./contracts/02_mini-vault-protocol) | Access control & factory patterns | Role-based auth, factory deployment, ERC20 integration, Foundry testing |
 | [03_mini-dex-protocol](./contracts/03_mini-dex-protocol) | AMM mechanics & DeFi primitives | x·y=k invariant, LP share math, reserve sync, full-stack Web3 DApp |
 | [04_mini-staking-protocol](./contracts/04_mini-staking-protocol) | Reward distribution math | Synthetix model, time-weighted O(1) accumulator, CEI pattern, Foundry invariant tests |
+| [05_oracle-price-feed](./contracts/05_oracle-price-feed) | Oracle integration | Chainlink price feeds, precision math (1e8/1e18), Mock testing, forge deployment scripts |
 
 ---
 
@@ -27,7 +28,8 @@ web3-lab/
 │   ├── 01_simple-contracts/       — Solidity fundamentals (structs, mappings, ERC standards)
 │   ├── 02_mini-vault-protocol/    — Factory pattern, access control, Foundry testing
 │   ├── 03_mini-dex-protocol/      — AMM mechanics, LP math, full-stack DApp
-│   └── 04_mini-staking-protocol/  — Synthetix reward math, events, Foundry invariant tests
+│   ├── 04_mini-staking-protocol/  — Synthetix reward math, events, Foundry invariant tests
+│   └── 05_oracle-price-feed/      — Chainlink integration, Mock instances, Deploy script
 ├── Notes/
 │   ├── 01_solidity-basics/        — 20+ reference notes, linked from practice contracts
 │   └── 02_defi-fundamentals/      — AMM math, LP mechanics, oracle patterns
