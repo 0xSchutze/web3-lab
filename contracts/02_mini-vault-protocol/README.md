@@ -57,7 +57,7 @@ test/                   # Tests (WIP)
 ```bash
 git clone https://github.com/0xSchutze/web3-lab.git
 cd web3-lab/contracts/02_mini-vault-protocol
-forge install
+forge install foundry-rs/forge-std
 ```
 
 ### Build

@@ -100,8 +100,8 @@ The protocol includes a single-page web interface for interacting with all three
 
 ```shell
 git clone https://github.com/0xSchutze/web3-lab.git
-cd web3-lab/contracts/mini-dex-protocol
-forge install
+cd web3-lab/contracts/03_mini-dex-protocol
+forge install foundry-rs/forge-std
 forge build
 ```
 

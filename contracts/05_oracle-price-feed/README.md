@@ -36,7 +36,7 @@ script/
 
 ```shell
 cd web3-lab/contracts/05_oracle-price-feed
-forge install
+forge install foundry-rs/forge-std smartcontractkit/chainlink-brownie-contracts
 forge build
 ```
 

@@ -2,53 +2,42 @@
 
 Personal learning repository. Documenting my path from Solidity fundamentals to smart contract security research — through building, breaking, and analyzing real protocols.
 
----
-
-## Learning Path
-
-The goal is to master development first, then transition into security. Every protocol here was built to understand something specific at the implementation level, not to ship a product.
-
-> **Note:** Folders are numbered chronologically (01 → 04) to demonstrate the learning progression, from foundational concepts to complex protocol architecture.
-
-| Project | Focus | Key Concepts |
-|---|---|---|
-| [01_simple-contracts](./contracts/01_simple-contracts) | Solidity fundamentals | Structs, mappings, modifiers, events, ERC20/ERC721 basics |
-| [02_mini-vault-protocol](./contracts/02_mini-vault-protocol) | Access control & factory patterns | Role-based auth, factory deployment, ERC20 integration, Foundry testing |
-| [03_mini-dex-protocol](./contracts/03_mini-dex-protocol) | AMM mechanics & DeFi primitives | x·y=k invariant, LP share math, reserve sync, full-stack Web3 DApp |
-| [04_mini-staking-protocol](./contracts/04_mini-staking-protocol) | Reward distribution math | Synthetix model, time-weighted O(1) accumulator, CEI pattern, Foundry invariant tests |
-| [05_oracle-price-feed](./contracts/05_oracle-price-feed) | Oracle integration | Chainlink price feeds, precision math (1e8/1e18), Mock testing, forge deployment scripts |
+Every protocol here was built to understand something specific at the implementation level, not to ship a product.
 
 ---
 
-## Structure
+## What's Here
 
-```
-web3-lab/
-├── contracts/
-│   ├── 01_simple-contracts/       — Solidity fundamentals (structs, mappings, ERC standards)
-│   ├── 02_mini-vault-protocol/    — Factory pattern, access control, Foundry testing
-│   ├── 03_mini-dex-protocol/      — AMM mechanics, LP math, full-stack DApp
-│   ├── 04_mini-staking-protocol/  — Synthetix reward math, events, Foundry invariant tests
-│   └── 05_oracle-price-feed/      — Chainlink integration, Mock instances, Deploy script
-├── Notes/
-│   ├── 01_solidity-basics/        — 20+ reference notes, linked from practice contracts
-│   └── 02_defi-fundamentals/      — AMM math, LP mechanics, oracle patterns
-├── ctf/                           — CTF solutions: Ethernaut, Damn Vulnerable DeFi
-├── pocs/                          — Proof of concept exploits
-└── hack-analysis/                 — Real-world hack breakdowns
-```
+**[`contracts/`](./contracts)** — Protocol implementations. Each folder is a self-contained Foundry project with its own README, test suite, and deploy script. Organized chronologically to reflect the learning progression — from foundational Solidity to advanced DeFi mechanics.
+
+**[`Notes/`](./Notes)** — Technical reference notes written while building. Covers Solidity internals, DeFi mechanics, precision math, and security patterns. Each note links back to the contract that uses it.
+
+**[`ctf/`](./ctf)** — CTF solutions with write-ups explaining the vulnerability, the exploit, and the underlying concept. Ethernaut → Damn Vulnerable DeFi.
+
+**[`pocs/`](./pocs)** — Standalone proof-of-concept exploits demonstrating specific vulnerability classes.
+
+**[`hack-analysis/`](./hack-analysis)** — Real-world hack breakdowns with Foundry fork test reproductions.
 
 > `ctf/`, `pocs/`, and `hack-analysis/` are part of the upcoming security phase.
 
 ---
 
-## Notes
+## Learning Path
 
-The [`Notes/`](./Notes) directory contains technical reference notes written while building the contracts above. Each concept links back to the practice contract that uses it — so the notes and code teach each other.
+Two phases, executed sequentially.
 
-- [01 — Solidity Basics](./Notes/01_solidity-basics) — 20+ topics from arrays to ERC721 transfer logic
-- [02 — DeFi Fundamentals](./Notes/02_defi-fundamentals) — AMM math, LP mechanics, oracle patterns
+**Phase 1 — Developer Mastery** (current)
+Building progressively complex DeFi protocols from scratch — each one covering a different layer of how decentralized finance actually works. Every protocol is tested with Foundry and shipped with a deploy script.
+
+**Phase 2 — Security Research** (upcoming)
+Transitioning from builder to auditor. CTF challenges, hack reproductions, PoC writing, formal audit tooling (Slither, Echidna, Foundry invariants), and competitive audits on CodeHawks and Code4rena.
 
 ---
 
-*0xSchutze — building to understand, then audit.*
+## Notes
+
+The [`Notes/`](./Notes) directory contains technical reference notes written alongside the contracts. Each concept is written in English, links to the contract that uses it, and goes beyond "what is X" into "why does X work this way and where does it break."
+
+- [01 — Solidity Basics](./Notes/01_solidity-basics)
+- [02 — DeFi Fundamentals](./Notes/02_defi-fundamentals)
+

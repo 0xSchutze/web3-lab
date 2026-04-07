@@ -30,6 +30,9 @@ Requires [Foundry](https://getfoundry.sh/). No external library dependencies.
 git clone https://github.com/0xSchutze/web3-lab.git
 cd web3-lab/contracts/04_mini-staking-protocol
 
+# Install dependencies
+forge install foundry-rs/forge-std
+
 # Compile
 forge build
 
