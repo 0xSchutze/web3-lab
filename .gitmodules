@@ -1,6 +1,0 @@
-[submodule "contracts/05_oracle-price-feed/lib/forge-std"]
-	path = contracts/05_oracle-price-feed/lib/forge-std
-	url = https://github.com/foundry-rs/forge-std
-[submodule "contracts/05_oracle-price-feed/lib/chainlink-brownie-contracts"]
-	path = contracts/05_oracle-price-feed/lib/chainlink-brownie-contracts
-	url = https://github.com/smartcontractkit/chainlink-brownie-contracts

@@ -13,6 +13,8 @@ A routerless Automated Market Maker (AMM) and permissionless token Launchpad, bu
 
 **Live Demo:** [0xschutze.github.io/web3-lab/contracts/03_mini-dex-protocol/frontend](https://0xschutze.github.io/web3-lab/contracts/03_mini-dex-protocol/frontend)
 
+> **Note:** The live demo may be temporarily unavailable. The off-chain indexer runs on Supabase's free tier, which pauses inactive databases. The smart contracts on Sepolia remain fully operational.
+
 <p align="center">
   <img src="frontend/assets/preview.png" alt="Mini-DEX Interface Preview" width="800" />
 </p>
