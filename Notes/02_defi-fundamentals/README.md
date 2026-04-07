@@ -8,9 +8,14 @@ These are the "Load-Bearing Pillars" of Decentralized Finance.
 
 - [Automated Market Makers (AMM) & $x \times y = k$](./amm-math.md)
 - [Tokenized Vaults & ERC4626 (Shares vs Assets)](./vaults-erc4626.md)
+- [Staking Rewards & O(1) Accumulator Math](./staking-rewards-math.md)
 - [Factory Pattern (Smart Contract Architecture)](./factory-pattern.md)
+- [Oracle Architecture & Chainlink Price Feeds](./oracle-architecture.md)
+- [Market Mechanics: CEX, DEX and Lending](./market-mechanics.md)
 
 ## Practice Contracts
 
-- [SimpleDex](../../contracts/01_simple-contracts/simpleDex.sol) — A single-pair DEX demonstrating liquidity provision and CPMM swap math.
-- *(More advanced modular architectures like Factory Patterns will be linked here soon).*
+- [Mini DEX Protocol](../../contracts/03_mini-dex-protocol) — Demonstrating liquidity provision and AMM swap math.
+- [Mini Vault Protocol](../../contracts/02_mini-vault-protocol) — Demonstrating ERC4626 concepts and Factory Patterns.
+- [Mini Staking Protocol](../../contracts/04_mini-staking-protocol) — Demonstrating Synthetix reward mechanics and precision math.
+- [Oracle Price Feed](../../contracts/05_oracle-price-feed) — Chainlink integration, precision math, mock testing and deploy script.

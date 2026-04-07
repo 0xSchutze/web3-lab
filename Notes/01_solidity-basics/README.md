@@ -41,14 +41,14 @@ struct Player {
 Smaller uint types (`uint32`, `uint16`) save gas **only inside structs** — group them together:
 
 ```solidity
-// ✅ Good — packed, saves gas
+// Good — packed, saves gas
 struct Efficient {
     uint32 a;
     uint32 b;
     uint c;
 }
 
-// ❌ Bad — not packed, wastes gas
+// Bad — not packed, wastes gas
 struct Wasteful {
     uint32 a;
     uint c;
@@ -68,6 +68,7 @@ Outside structs, `uint32` costs the **same gas** as `uint256` — so use `uint` 
 - [msg Global Variable](./msg.md)
 - [Mapping](./mapping.md)
 - [Require](./require.md)
+- [CEI (Checks-Effects-Interactions) Pattern](./cei-pattern.md)
 - [Events and Emit](./events-and-emit.md)
 - [Inheritance](./inheritance.md)
 - [Interface](./interface.md)
