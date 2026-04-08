@@ -12,6 +12,8 @@ These are the "Load-Bearing Pillars" of Decentralized Finance.
 - [Factory Pattern (Smart Contract Architecture)](./factory-pattern.md)
 - [Oracle Architecture & Chainlink Price Feeds](./oracle-architecture.md)
 - [Market Mechanics: CEX, DEX and Lending](./market-mechanics.md)
+- [Flash Loan Mechanics](./flash-loan-mechanics.md)
+- [EVM Execution Model & Reentrancy](./evm-execution-model.md)
 
 ## Practice Contracts
 
@@ -19,3 +21,4 @@ These are the "Load-Bearing Pillars" of Decentralized Finance.
 - [Mini Vault Protocol](../../contracts/02_mini-vault-protocol) — Demonstrating ERC4626 concepts and Factory Patterns.
 - [Mini Staking Protocol](../../contracts/04_mini-staking-protocol) — Demonstrating Synthetix reward mechanics and precision math.
 - [Oracle Price Feed](../../contracts/05_oracle-price-feed) — Chainlink integration, precision math, mock testing and deploy script.
+- [Flash Loan](../../contracts/06_flash-loan) — Atomicity, callbacks, zero-collateral borrowing, reentrancy context.
