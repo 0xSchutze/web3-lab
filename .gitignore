@@ -5,3 +5,5 @@ lib/
 
 # Foundry lock
 foundry.lock
+
+.env
