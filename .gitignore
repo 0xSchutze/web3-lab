@@ -2,6 +2,7 @@
 out/
 cache/
 lib/
+broadcast/
 
 # Foundry lock
 foundry.lock
