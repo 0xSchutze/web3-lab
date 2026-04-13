@@ -4,6 +4,7 @@
 
 **Category:** Information Disclosure
 **Severity:** High
+**Target Contract:** [Vault.sol](./Vault.sol)
 
 ## Analysis
 

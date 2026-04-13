@@ -4,6 +4,7 @@
 
 **Category:** Arithmetic
 **Severity:** Critical
+**Target Contract:** [Token.sol](./Token.sol)
 
 ## Analysis
 

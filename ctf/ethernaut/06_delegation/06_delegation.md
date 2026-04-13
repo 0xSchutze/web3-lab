@@ -4,6 +4,7 @@
 
 **Category:** Access Control / Delegatecall Misuse
 **Severity:** Critical
+**Target Contract:** [Delegate.sol](./Delegate.sol)
 
 ## Analysis
 

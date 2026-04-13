@@ -4,6 +4,7 @@
 
 **Category:** Access Control
 **Severity:** Critical
+**Target Contract:** [Fallout.sol](./Fallout.sol)
 
 ## Analysis
 

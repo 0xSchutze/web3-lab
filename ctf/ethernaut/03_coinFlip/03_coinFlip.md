@@ -4,6 +4,7 @@
 
 **Category:** Bad Randomness
 **Severity:** High
+**Target Contract:** [CoinFlip.sol](./CoinFlip.sol)
 
 ## Analysis
 

@@ -4,6 +4,7 @@
 
 **Category:** Access Control
 **Severity:** High
+**Target Contract:** [Telephone.sol](./Telephone.sol)
 
 ## Analysis
 
