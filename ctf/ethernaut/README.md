@@ -10,10 +10,26 @@ To run the exploit scripts after cloning, install the dependency inside each cha
 
 ```bash
 cd <challenge_folder>
-forge install foundry-rs/forge-std --no-commit
+forge install foundry-rs/forge-std --no-git
 ```
 
 You will also need a `.env` file (gitignored) with your Sepolia RPC URL and private key for on-chain deployment.
+
+## Repository Structure
+
+Each challenge is a self-contained directory:
+
+```
+<number>_<name>/
+├── <name>.md              # Write-up: vulnerability analysis, exploit steps, key takeaway
+├── <TargetContract>.sol   # Original vulnerable contract from Ethernaut
+├── exploit.sol            # On-chain attacker contract (if applicable)
+├── IExploit.sol           # Interfaces for target and attacker contracts
+├── exploitScript.s.sol    # Foundry deployment/execution script
+└── foundry.toml           # Per-challenge Foundry config (src = ".")
+```
+
+Challenges solved via browser console only (no Foundry exploit needed) will contain only the `.md` and the target contract.
 
 ## Progress
 
