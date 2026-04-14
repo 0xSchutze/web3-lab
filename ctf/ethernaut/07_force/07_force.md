@@ -1,24 +1,27 @@
-# Force
+# Level 07: Force
 
-## Vulnerability: Forceful ETH Transfer via `selfdestruct`
+**Target:** [Force.sol](./Force.sol)
 
-**Category:** Unexpected Ether Reception
-**Severity:** Medium
-**Target Contract:** [Force.sol](./Force.sol)
+## Vulnerability
 
-## Analysis
+The contract has no `receive()`, no `fallback()`, and no `payable` functions — yet ETH can still be forced into it via `selfdestruct`.
 
-The `Force` contract has an empty body — no `receive()`, no `fallback()`, no `payable` functions. Under normal circumstances, any attempt to send ETH to this contract would revert because there is no mechanism to accept it.
+```solidity
+contract Force { /* empty */ }
+```
 
-However, `selfdestruct(address)` bypasses all of these checks. When a contract calls `selfdestruct(targetAddress)`, the EVM destroys the calling contract and forcibly transfers its entire ETH balance to the target address. The target contract has no ability to reject this transfer — it cannot revert, and neither `receive()` nor `fallback()` is invoked.
+## Root Cause
 
-## Exploit Files
+`selfdestruct(address)` bypasses all Solidity-level ETH acceptance checks. The EVM forcibly credits the target's balance without invoking any code. The target cannot reject or react to the transfer.
 
-- [exploit.sol](./exploit.sol) — Payable contract that self-destructs into the target
-- [exploitScript.s.sol](./exploitScript.s.sol) — Deploys with 1 wei and triggers `selfdestruct`
+## Exploit
 
-## Key Takeaway
+Deploy a contract funded with ETH, then call `selfdestruct(targetAddress)`. The contract is destroyed and its entire balance is force-sent to the target.
 
-Never assume that `address(this).balance == 0` just because your contract has no `payable` functions. ETH can be forcefully sent to any contract via `selfdestruct` (and also via pre-calculated `CREATE2` addresses or coinbase rewards). Any invariant that relies on tracking exact contract balances must account for this edge case.
+```solidity
+selfdestruct(payable(target)); // target cannot reject this
+```
 
-**Note:** As of Solidity 0.8.24 / the Dencun upgrade, `selfdestruct` only transfers ETH but no longer removes the contract's code (except when called in the same transaction as deployment). The full removal behavior is being deprecated.
+## Real-World Reference
+
+Any contract that uses `address(this).balance` as an invariant is vulnerable. For example, a game contract that checks `require(address(this).balance == expectedPot)` can be bricked by force-sending extra ETH, making the condition permanently fail. This is documented in [SWC-132: Unexpected Ether Balance](https://swcregistry.io/docs/SWC-132). Note: as of Dencun (EIP-6780), `selfdestruct` only removes code when called in the same transaction as deployment — but the forced ETH transfer still works.

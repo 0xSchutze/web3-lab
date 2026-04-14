@@ -1,21 +1,25 @@
-# Fal1out
+# Level 02: Fal1out
 
-## Vulnerability: Constructor Typo (Legacy Solidity)
+**Target:** [Fallout.sol](./Fallout.sol)
 
-**Category:** Access Control
-**Severity:** Critical
-**Target Contract:** [Fallout.sol](./Fallout.sol)
+## Vulnerability
 
-## Analysis
+The intended constructor is named `Fal1out()` (digit `1`) while the contract is named `Fallout`. In Solidity <0.5.0, constructors were functions matching the contract name — this typo makes it a regular public function callable by anyone.
 
-In Solidity versions prior to 0.5.0, constructors were defined as functions with the same name as the contract. If the function name didn't match the contract name exactly, it would compile as a regular public function instead of a constructor.
+```solidity
+function Fal1out() public payable {
+    owner = msg.sender; // anyone can call this at any time
+}
+```
 
-In this contract, the intended constructor is named `Fal1out()` (with the digit `1`), while the contract is named `Fallout`. Due to this typo, `Fal1out()` is not treated as a constructor — it becomes a publicly callable function. As a result, anyone can call it at any time to claim ownership.
+## Root Cause
 
-## Exploit Steps
+Pre-0.5.0 constructor convention relied on exact name matching. A single-character typo silently converted the constructor into an unprotected public function.
 
-1. Call `Fal1out()` with any ETH value — this sets `owner = msg.sender`.
+## Exploit
 
-## Key Takeaway
+Call `Fal1out()` — instantly becomes owner. No exploit contract needed.
 
-Modern Solidity (≥0.5.0) introduced the `constructor()` keyword specifically to prevent this class of bugs. Always use `constructor()` instead of named constructor functions. This vulnerability was present in early real-world contracts and is a reminder that even simple typos can lead to critical exploits.
+## Real-World Reference
+
+The Rubixi contract had an identical bug: the contract was renamed from `DynamicPyramid` to `Rubixi` but the constructor function name was never updated, leaving `DynamicPyramid()` as a public function anyone could call to claim ownership. Solidity ≥0.5.0 introduced the `constructor()` keyword to eliminate this entire class of bugs.

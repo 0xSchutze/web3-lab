@@ -1,32 +1,30 @@
-# Fallback
+# Level 01: Fallback
 
-## Vulnerability: Access Control via `receive()`
+**Target:** [Fallback.sol](./Fallback.sol)
 
-**Category:** Access Control
-**Severity:** Critical
-**Target Contract:** [Fallback.sol](./Fallback.sol)
+## Vulnerability
 
-## Analysis
-
-The `receive()` function is a special Solidity function that triggers whenever someone sends ETH to the contract without calling any specific function. In this contract, the `receive()` function reassigns ownership to `msg.sender` if two conditions are met: the sender has a non-zero contribution and sends any amount greater than 0.
+The `receive()` function contains ownership transfer logic — sending any amount of ETH after making a small contribution reassigns the contract owner.
 
 ```solidity
 receive() external payable {
     require(msg.value > 0 && contributions[msg.sender] > 0);
-    owner = msg.sender;
+    owner = msg.sender; // ownership bypass
 }
 ```
 
-The `contribute()` function also allows ownership transfer, but only if the caller's total contributions exceed the owner's (1000 ETH). This path is impractical. However, the `receive()` function provides a shortcut — a single small contribution followed by a direct ETH transfer is enough to claim ownership.
+## Root Cause
 
-## Exploit Steps
+Critical access control logic placed inside `receive()`, which is meant for handling unexpected ETH transfers — not authorization decisions.
 
-1. Call `contribute()` with a small amount (e.g., 0.0001 ETH) to register a non-zero contribution.
-2. Send ETH directly to the contract address to trigger `receive()`, which sets `owner = msg.sender`.
+## Exploit
+
+1. Call `contribute()` with a small amount to register a non-zero contribution.
+2. Send ETH directly to trigger `receive()` → becomes owner.
 3. Call `withdraw()` to drain the contract.
 
-**Solved via browser console — no exploit contract needed.**
+Solved via browser console — no exploit contract needed.
 
-## Key Takeaway
+## Real-World Reference
 
-Never place ownership logic inside `receive()` or `fallback()` functions. These are meant for handling unexpected ETH transfers, not for access control decisions.
+The Rubixi contract (2016) had a similar ownership bug where the constructor was misspelled, allowing anyone to claim ownership. While not identical to a `receive()` flaw, both stem from the same root: ownership logic in an unprotected entry point. [Rubixi Post-Mortem](https://blog.ethereum.org/2016/06/19/thinking-smart-contract-security)

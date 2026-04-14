@@ -1,37 +1,33 @@
-# Delegation
+# Level 06: Delegation
 
-## Vulnerability: Unprotected `delegatecall` in Fallback
+**Target:** [Delegate.sol](./Delegate.sol)
 
-**Category:** Access Control / Delegatecall Misuse
-**Severity:** Critical
-**Target Contract:** [Delegate.sol](./Delegate.sol)
+## Vulnerability
 
-## Analysis
+The `Delegation` contract forwards any unknown function call to `Delegate` via `delegatecall` in its `fallback()`, with no access control:
 
-The `Delegation` contract implements a proxy pattern using `delegatecall` inside its `fallback()` function. When a call is made to `Delegation` with data that doesn't match any of its own functions, the fallback triggers and forwards the call to the `Delegate` contract via `delegatecall`.
+```solidity
+fallback() external payable {
+    (bool result,) = address(delegate).delegatecall(msg.data);
+}
+```
 
-The critical property of `delegatecall` is that it executes the target contract's **code** in the **caller's storage context**. This means when `Delegate.pwn()` runs via `delegatecall`, the `owner = msg.sender` assignment modifies `Delegation`'s storage (slot 0), not `Delegate`'s.
+`delegatecall` executes the target's **code** in the **caller's storage context**. When `Delegate.pwn()` runs via `delegatecall`, `owner = msg.sender` writes to `Delegation`'s slot 0, not `Delegate`'s.
 
-Since there are no access control checks on who can trigger the fallback, anyone can send a transaction with `pwn()`'s function selector (`0xdd365b8b`) as calldata. The fallback forwards it via `delegatecall`, and the `Delegation` contract's owner is overwritten.
+## Root Cause
 
-## Exploit Steps
+Unprotected `delegatecall` in a proxy pattern. The fallback forwards arbitrary calldata to the implementation contract without restricting which functions can be invoked or who can invoke them.
 
-1. Compute the function selector for `pwn()`: `keccak256("pwn()")` → first 4 bytes → `0xdd365b8b`.
-2. Send a raw transaction to the `Delegation` contract with `data: 0xdd365b8b`.
-3. The fallback catches this call and delegates it to `Delegate`, which executes `owner = msg.sender` in `Delegation`'s storage.
+## Exploit
 
-**Solved via browser console:**
+Send a raw transaction to `Delegation` with calldata `0xdd365b8b` (the function selector for `pwn()`). The fallback delegates it, and `owner` in `Delegation`'s storage is overwritten.
+
 ```javascript
 await web3.eth.sendTransaction({from: player, to: contract.address, data: "0xdd365b8b", gas: 100000})
 ```
 
-## Real-World Impact: Parity Multisig Hack (2017)
+Solved via browser console — no exploit contract needed.
 
-Parity Wallet used a similar proxy + library architecture for gas efficiency. The library contract had an `initWallet()` function that set the wallet owner, but it lacked access control — anyone could call it. A hacker exploited this by calling `initWallet()` through users' proxy wallets via `delegatecall`, taking ownership and stealing **~$30M in ETH**.
+## Real-World Reference
 
-## Key Takeaway
-
-When using `delegatecall` in a proxy pattern, ensure that:
-1. The fallback function has proper access control (or is intentionally open with safe logic).
-2. Any initialization function in the logic contract can only be called once (`initializer` modifier).
-3. Storage layouts between the proxy and logic contract are perfectly aligned to prevent **storage collision**.
+**Parity Multisig Hack (July 2017) — $30M stolen.** Parity Wallet used a proxy + library architecture where each wallet proxy delegated calls to a shared implementation. The implementation's `initWallet()` function — which set the wallet owner — had no access control and no single-use guard. An attacker called `initWallet()` on the richest wallet proxies via `delegatecall`, took ownership, and drained ~153,000 ETH. [Parity Post-Mortem](https://www.parity.io/blog/the-multi-sig-hack-a-postmortem)

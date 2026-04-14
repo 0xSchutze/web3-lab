@@ -1,0 +1,5 @@
+# Scaffold script
+*.sh
+
+# Foundry test artifacts
+testGate.t.sol

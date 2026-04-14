@@ -1,28 +1,25 @@
-# Token
+# Level 05: Token
 
-## Vulnerability: Integer Underflow
+**Target:** [Token.sol](./Token.sol)
 
-**Category:** Arithmetic
-**Severity:** Critical
-**Target Contract:** [Token.sol](./Token.sol)
+## Vulnerability
 
-## Analysis
-
-The `transfer()` function checks whether the sender has enough balance using:
+The balance check uses unsigned integer subtraction without overflow protection:
 
 ```solidity
-require(balances[msg.sender] - _value >= 0);
+require(balances[msg.sender] - _value >= 0); // always true for uint256
 ```
 
-At first glance, this appears to validate that the sender's balance is sufficient. However, since `balances` is a `uint256` (unsigned integer), the subtraction `balances[msg.sender] - _value` can never produce a negative result. Instead, when `_value` exceeds the sender's balance, the result **wraps around** to an extremely large number (close to `2^256 - 1`). This wrapped value is always greater than 0, so the `require` check always passes.
+Since `uint256` cannot be negative, the subtraction wraps around to `~2^256` when `_value > balance`. The wrapped result is always `>= 0`, so the check always passes.
 
-As a result, an attacker can transfer more tokens than they own, effectively minting tokens out of thin air.
+## Root Cause
 
-## Exploit Files
+Integer underflow in Solidity <0.8.0 which lacks built-in overflow/underflow checks. Developers had to use OpenZeppelin's SafeMath library to guard against this.
 
-- [exploit.sol](./exploit.sol) — Requests `totalSupply` tokens from a zero-balance contract, triggering underflow
-- [exploitScript.s.sol](./exploitScript.s.sol) — Deploys and executes in a single transaction
+## Exploit
 
-## Key Takeaway
+Transfer more tokens than owned (e.g., `totalSupply` from a zero-balance contract). The underflow grants the attacker an astronomically large balance.
 
-Solidity versions prior to 0.8.0 do not have built-in overflow/underflow protection. Developers had to use libraries like **OpenZeppelin's SafeMath** to guard against arithmetic bugs. Starting from Solidity 0.8.0, the compiler automatically reverts on overflow and underflow, making this class of vulnerability largely obsolete in newer contracts.
+## Real-World Reference
+
+The BEC (Beauty Chain) token hack (2018) exploited an integer overflow in `batchTransfer()` where `amount * receivers.length` overflowed to zero, bypassing the balance check while still crediting each receiver the full `amount`. Over $900M in token value was destroyed. This led to multiple exchange delistings and accelerated the adoption of SafeMath across the ecosystem. [BEC Overflow Analysis](https://medium.com/@peckshield/alert-new-batchoverflow-bug-in-multiple-erc20-smart-contracts-cve-2018-10299-511067db6536)

@@ -1,29 +1,27 @@
-# Telephone
+# Level 04: Telephone
 
-## Vulnerability: `tx.origin` for Authorization
+**Target:** [Telephone.sol](./Telephone.sol)
 
-**Category:** Access Control
-**Severity:** High
-**Target Contract:** [Telephone.sol](./Telephone.sol)
+## Vulnerability
 
-## Analysis
+The `changeOwner()` function uses `tx.origin != msg.sender` as its access control — a condition trivially satisfied by routing the call through an intermediary contract.
 
-The `changeOwner()` function uses `tx.origin != msg.sender` as its access control check. This condition is satisfied when the call is routed through an intermediary contract rather than called directly by an EOA (Externally Owned Account).
+```solidity
+function changeOwner(address _owner) public {
+    if (tx.origin != msg.sender) {
+        owner = _owner;
+    }
+}
+```
 
-- **`tx.origin`**: The original EOA that initiated the entire transaction chain.
-- **`msg.sender`**: The immediate caller of the current function (can be a contract or an EOA).
+## Root Cause
 
-When a user calls the function directly, `tx.origin == msg.sender`, so the condition fails and ownership doesn't change. However, when the call is relayed through an attacker contract, `tx.origin` remains the user's EOA while `msg.sender` becomes the attacker contract's address. This makes `tx.origin != msg.sender` evaluate to `true`, allowing ownership transfer.
+Using `tx.origin` for authorization. `tx.origin` always refers to the original EOA, while `msg.sender` changes at each call depth. Any intermediary contract creates the `!=` condition.
 
-## Exploit Files
+## Exploit
 
-- [exploit.sol](./exploit.sol) — Intermediary contract that creates the `tx.origin != msg.sender` condition
-- [exploitScript.s.sol](./exploitScript.s.sol) — Deploys and executes in a single transaction
+Deploy a contract that calls `changeOwner()` — `tx.origin` remains the EOA while `msg.sender` becomes the exploit contract, satisfying the condition.
 
-## Real-World Impact: Phishing Attacks
+## Real-World Reference
 
-In production code, the dangerous pattern is the reverse: using `require(tx.origin == owner)` for authorization. An attacker can trick the real owner into interacting with a malicious contract (e.g., a fake NFT mint). The malicious contract then silently calls the victim's contract. Since `tx.origin` is the real owner (who initiated the transaction), the access check passes, and the attacker drains funds.
-
-## Key Takeaway
-
-Never use `tx.origin` for authorization. Always use `msg.sender`. The `tx.origin` global variable cannot distinguish between a legitimate direct call and a phished relayed call.
+`tx.origin` phishing is a well-documented attack vector. An attacker tricks the real owner into interacting with a malicious contract (e.g., a fake NFT mint). The malicious contract silently calls the victim's contract — since `tx.origin` is the real owner, any `require(tx.origin == owner)` check passes. This was flagged as a common vulnerability in the [SWC Registry (SWC-115)](https://swcregistry.io/docs/SWC-115).
