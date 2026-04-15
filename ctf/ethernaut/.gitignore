@@ -1,5 +1,8 @@
 # Scaffold script
 *.sh
 
+# Foundry lib symlinks
+lib
+
 # Foundry test artifacts
 testGate.t.sol
