@@ -53,11 +53,11 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 | 16 | [Preservation](./16_preservation/) | Delegatecall + Storage Collision | ✅ | [Notes](./16_preservation/16_preservation.md) |
 | 17 | [Recovery](./17_recovery/) | Contract Address Derivation | ✅ | [Notes](./17_recovery/17_recovery.md) |
 | 18 | [Magic Number](./18_magic_number/) | EVM Bytecode Engineering | ✅ | [Notes](./18_magic_number/18_magic_number.md) |
-| 19 | Alien Codex | Storage Manipulation | ⬜ | — |
-| 20 | Denial | DoS (Gas) | ⬜ | — |
-| 21 | Shop | Interface Abuse | ⬜ | — |
-| 22 | Dex | DEX Price Manipulation | ⬜ | — |
-| 23 | Dex Two | DEX Token Injection | ⬜ | — |
+| 19 | [Alien Codex](./19_alien_codex/) | Storage Manipulation | ✅ | [Notes](./19_alien_codex/19_alien_codex.md) |
+| 20 | [Denial](./20_denial/) | DoS (Gas Exhaustion) | ✅ | [Notes](./20_denial/20_denial.md) |
+| 21 | [Shop](./21_shop/) | Interface / Oracle Abuse | ✅ | [Notes](./21_shop/21_shop.md) |
+| 22 | [Dex](./22_dex/) | AMM Price Manipulation | ✅ | [Notes](./22_dex/22_dex.md) |
+| 23 | [Dex Two](./23_dex_two/) | DEX Token Injection | ✅ | [Notes](./23_dex_two/23_dex_two.md) |
 | 24 | Puzzle Wallet | Proxy + Delegatecall | ⬜ | — |
 | 25 | Motorbike | UUPS Proxy | ⬜ | — |
 | 26 | DoubleEntryPoint | Detection Bot | ⬜ | — |
