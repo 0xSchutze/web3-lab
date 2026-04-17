@@ -35,35 +35,46 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 
 | # | Challenge | Category | Solved | Write-Up |
 |---|-----------|----------|--------|----------|
-| 01 | [Fallback](./01_fallback/) | Access Control | ✅ | [Notes](./01_fallback/01_fallback.md) |
-| 02 | [Fal1out](./02_fal1out/) | Access Control (Constructor Bug) | ✅ | [Notes](./02_fal1out/02_fal1out.md) |
-| 03 | [CoinFlip](./03_coinFlip/) | Bad Randomness | ✅ | [Notes](./03_coinFlip/03_coinFlip.md) |
-| 04 | [Telephone](./04_telephone/) | Access Control (`tx.origin`) | ✅ | [Notes](./04_telephone/04_telephone.md) |
-| 05 | [Token](./05_token/) | Integer Underflow | ✅ | [Notes](./05_token/05_token.md) |
-| 06 | [Delegation](./06_delegation/) | Delegatecall Misuse | ✅ | [Notes](./06_delegation/06_delegation.md) |
-| 07 | [Force](./07_force/) | Forceful ETH Transfer | ✅ | [Notes](./07_force/07_force.md) |
-| 08 | [Vault](./08_vault/) | Information Disclosure | ✅ | [Notes](./08_vault/08_vault.md) |
-| 09 | [King](./09_king/) | DoS via Forced Revert | ✅ | [Notes](./09_king/09_king.md) |
-| 10 | [Re-entrancy](./10_%20Re-entrancy/) | Reentrancy | ✅ | [Notes](./10_%20Re-entrancy/Re-entrancy.md) |
-| 11 | [Elevator](./11_elevator/) | Interface / Oracle Abuse | ✅ | [Notes](./11_elevator/11_elevator.md) |
-| 12 | [Privacy](./12_privacy/) | Storage Layout | ✅ | [Notes](./12_privacy/12_privacy.md) |
-| 13 | [Gatekeeper One](./13_gatekeeper/) | Access Control + Gas | ✅ | [Notes](./13_gatekeeper/13_gatekeeper.md) |
-| 14 | [Gatekeeper Two](./14_gatekeeper_two/) | Access Control + EVM Lifecycle | ✅ | [Notes](./14_gatekeeper_two/14_gatekeeper_two.md) |
-| 15 | [Naught Coin](./15_naught_coin/) | ERC20 Approval Bypass | ✅ | [Notes](./15_naught_coin/15_naught_coin.md) |
-| 16 | [Preservation](./16_preservation/) | Delegatecall + Storage Collision | ✅ | [Notes](./16_preservation/16_preservation.md) |
-| 17 | [Recovery](./17_recovery/) | Contract Address Derivation | ✅ | [Notes](./17_recovery/17_recovery.md) |
-| 18 | [Magic Number](./18_magic_number/) | EVM Bytecode Engineering | ✅ | [Notes](./18_magic_number/18_magic_number.md) |
-| 19 | [Alien Codex](./19_alien_codex/) | Storage Manipulation | ✅ | [Notes](./19_alien_codex/19_alien_codex.md) |
-| 20 | [Denial](./20_denial/) | DoS (Gas Exhaustion) | ✅ | [Notes](./20_denial/20_denial.md) |
-| 21 | [Shop](./21_shop/) | Interface / Oracle Abuse | ✅ | [Notes](./21_shop/21_shop.md) |
-| 22 | [Dex](./22_dex/) | AMM Price Manipulation | ✅ | [Notes](./22_dex/22_dex.md) |
-| 23 | [Dex Two](./23_dex_two/) | DEX Token Injection | ✅ | [Notes](./23_dex_two/23_dex_two.md) |
+| 01 | [Fallback](./01_fallback/) | Access Control | ✅ | [Notes](./01_fallback/README.md) |
+| 02 | [Fal1out](./02_fal1out/) | Access Control (Constructor Bug) | ✅ | [Notes](./02_fal1out/README.md) |
+| 03 | [CoinFlip](./03_coinFlip/) | Bad Randomness | ✅ | [Notes](./03_coinFlip/README.md) |
+| 04 | [Telephone](./04_telephone/) | Access Control (`tx.origin`) | ✅ | [Notes](./04_telephone/README.md) |
+| 05 | [Token](./05_token/) | Integer Underflow | ✅ | [Notes](./05_token/README.md) |
+| 06 | [Delegation](./06_delegation/) | Delegatecall Misuse | ✅ | [Notes](./06_delegation/README.md) |
+| 07 | [Force](./07_force/) | Forceful ETH Transfer | ✅ | [Notes](./07_force/README.md) |
+| 08 | [Vault](./08_vault/) | Information Disclosure | ✅ | [Notes](./08_vault/README.md) |
+| 09 | [King](./09_king/) | DoS via Forced Revert | ✅ | [Notes](./09_king/README.md) |
+| 10 | [Re-entrancy](./10_%20Re-entrancy/) | Reentrancy | ✅ | [Notes](./10_%20Re-entrancy/README.md) |
+| 11 | [Elevator](./11_elevator/) | Interface / Oracle Abuse | ✅ | [Notes](./11_elevator/README.md) |
+| 12 | [Privacy](./12_privacy/) | Storage Layout | ✅ | [Notes](./12_privacy/README.md) |
+| 13 | [Gatekeeper One](./13_gatekeeper/) | Access Control + Gas | ✅ | [Notes](./13_gatekeeper/README.md) |
+| 14 | [Gatekeeper Two](./14_gatekeeper_two/) | Access Control + EVM Lifecycle | ✅ | [Notes](./14_gatekeeper_two/README.md) |
+| 15 | [Naught Coin](./15_naught_coin/) | ERC20 Approval Bypass | ✅ | [Notes](./15_naught_coin/README.md) |
+| 16 | [Preservation](./16_preservation/) | Delegatecall + Storage Collision | ✅ | [Notes](./16_preservation/README.md) |
+| 17 | [Recovery](./17_recovery/) | Contract Address Derivation | ✅ | [Notes](./17_recovery/README.md) |
+| 18 | [Magic Number](./18_magic_number/) | EVM Bytecode Engineering | ✅ | [Notes](./18_magic_number/README.md) |
+| 19 | [Alien Codex](./19_alien_codex/) | Storage Manipulation | ✅ | [Notes](./19_alien_codex/README.md) |
+| 20 | [Denial](./20_denial/) | DoS (Gas Exhaustion) | ✅ | [Notes](./20_denial/README.md) |
+| 21 | [Shop](./21_shop/) | Interface / Oracle Abuse | ✅ | [Notes](./21_shop/README.md) |
+| 22 | [Dex](./22_dex/) | AMM Price Manipulation | ✅ | [Notes](./22_dex/README.md) |
+| 23 | [Dex Two](./23_dex_two/) | DEX Token Injection | ✅ | [Notes](./23_dex_two/README.md) |
 | 24 | Puzzle Wallet | Proxy + Delegatecall | ⬜ | — |
 | 25 | Motorbike | UUPS Proxy | ⬜ | — |
 | 26 | DoubleEntryPoint | Detection Bot | ⬜ | — |
 | 27 | Good Samaritan | Custom Errors | ⬜ | — |
 | 28 | Gatekeeper Three | Access Control | ⬜ | — |
 | 29 | Switch | Calldata Manipulation | ⬜ | — |
+| 30 | HigherOrder | Low-Level Type Parsing | ⬜ | — |
+| 31 | Stake | Staking / DeFi Math | ⬜ | — |
+| 32 | Impersonator | Signature / Auth Bypass | ⬜ | — |
+| 33 | MagicAnimalCarousel | Data Packing / Encoding | ⬜ | — |
+| 34 | BetHouse | State / Randomness | ⬜ | — |
+| 35 | EllipticToken | Cryptography (Elliptic Curve) | ⬜ | — |
+| 36 | ImpersonatorTwo | Signature / Auth Bypass v2 | ⬜ | — |
+| 37 | Cashback | DeFi Logic Error / Drain | ⬜ | — |
+| 38 | UniqueNFT | ERC721 Standard Abuse | ⬜ | — |
+| 39 | Forger | Hash Collision / Forgery | ⬜ | — |
+| 40 | NotOptimisticPortal | L2 Cross-Chain Bridge | ⬜ | — |
 
 ## Tools Used
 
