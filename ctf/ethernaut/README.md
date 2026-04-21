@@ -58,10 +58,10 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 | 21 | [Shop](./21_shop/) | Interface / Oracle Abuse | ✅ | [Notes](./21_shop/README.md) |
 | 22 | [Dex](./22_dex/) | AMM Price Manipulation | ✅ | [Notes](./22_dex/README.md) |
 | 23 | [Dex Two](./23_dex_two/) | DEX Token Injection | ✅ | [Notes](./23_dex_two/README.md) |
-| 24 | Puzzle Wallet | Proxy + Delegatecall | ⬜ | — |
-| 25 | Motorbike | UUPS Proxy | ⬜ | — |
-| 26 | DoubleEntryPoint | Detection Bot | ⬜ | — |
-| 27 | Good Samaritan | Custom Errors | ⬜ | — |
+| 24 | [Puzzle Wallet](./24_puzzle_wallet/) | Proxy Storage Collision | ✅ | [Notes](./24_puzzle_wallet/README.md) |
+| 25 | [Motorbike](./25_motorbike/) | UUPS Proxy — Uninitialized Impl | ✅ | [Notes](./25_motorbike/README.md) |
+| 26 | [Double Entry Point](./26_double_entry_point/) | Dual Transfer Path + Forta Bot | ✅ | [Notes](./26_double_entry_point/README.md) |
+| 27 | [Good Samaritan](./27_good_samaritan/) | Custom Error Spoofing | ✅ | [Notes](./27_good_samaritan/README.md) |
 | 28 | Gatekeeper Three | Access Control | ⬜ | — |
 | 29 | Switch | Calldata Manipulation | ⬜ | — |
 | 30 | HigherOrder | Low-Level Type Parsing | ⬜ | — |
@@ -93,3 +93,6 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 - Forceful ETH — `selfdestruct` bypass of `payable` restrictions
 - Information Disclosure — reading `private` storage slots via RPC
 - On-Chain Forensics — deterministic address derivation via RLP encoding
+- UUPS Proxy — uninitialized implementation, EIP-6780 selfdestruct deprecation context
+- Dual Entry Point — token migration residue, cross-contract error injection, Forta bot authoring
+- Custom Error Spoofing — `try/catch` origin blindness, `INotifyable` callback exploitation
