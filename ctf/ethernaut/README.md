@@ -62,9 +62,9 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 | 25 | [Motorbike](./25_motorbike/) | UUPS Proxy — Uninitialized Impl | ✅ | [Notes](./25_motorbike/README.md) |
 | 26 | [Double Entry Point](./26_double_entry_point/) | Dual Transfer Path + Forta Bot | ✅ | [Notes](./26_double_entry_point/README.md) |
 | 27 | [Good Samaritan](./27_good_samaritan/) | Custom Error Spoofing | ✅ | [Notes](./27_good_samaritan/README.md) |
-| 28 | Gatekeeper Three | Access Control | ⬜ | — |
-| 29 | Switch | Calldata Manipulation | ⬜ | — |
-| 30 | HigherOrder | Low-Level Type Parsing | ⬜ | — |
+| 28 | [Gatekeeper Three](./28_gatekeeper_three/) | Access Control (Multi-Gate) | ✅ | [Notes](./28_gatekeeper_three/README.md) |
+| 29 | [Switch](./29_switch/) | Calldata Offset Manipulation | ✅ | [Notes](./29_switch/README.md) |
+| 30 | [Higher Order](./30_higher_order/) | Assembly Type Confusion | ✅ | [Notes](./30_higher_order/README.md) |
 | 31 | Stake | Staking / DeFi Math | ⬜ | — |
 | 32 | Impersonator | Signature / Auth Bypass | ⬜ | — |
 | 33 | MagicAnimalCarousel | Data Packing / Encoding | ⬜ | — |
@@ -96,3 +96,5 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 - UUPS Proxy — uninitialized implementation, EIP-6780 selfdestruct deprecation context
 - Dual Entry Point — token migration residue, cross-contract error injection, Forta bot authoring
 - Custom Error Spoofing — `try/catch` origin blindness, `INotifyable` callback exploitation
+- Calldata Manipulation — ABI dynamic-type offset forgery, split modifier/call read paths
+- Assembly Type Confusion — `calldataload` 32-byte word bypass of Solidity type boundaries
