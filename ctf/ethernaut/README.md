@@ -65,8 +65,8 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 | 28 | [Gatekeeper Three](./28_gatekeeper_three/) | Access Control (Multi-Gate) | ✅ | [Notes](./28_gatekeeper_three/README.md) |
 | 29 | [Switch](./29_switch/) | Calldata Offset Manipulation | ✅ | [Notes](./29_switch/README.md) |
 | 30 | [Higher Order](./30_higher_order/) | Assembly Type Confusion | ✅ | [Notes](./30_higher_order/README.md) |
-| 31 | Stake | Staking / DeFi Math | ⬜ | — |
-| 32 | Impersonator | Signature / Auth Bypass | ⬜ | — |
+| 31 | [Stake](./31_stake/) | Staking Accounting / CEI Violation | ✅ | [Notes](./31_stake/README.md) |
+| 32 | [Impersonator](./32_impersonator/) | ECDSA Signature Malleability | ✅ | [Notes](./32_impersonator/README.md) |
 | 33 | MagicAnimalCarousel | Data Packing / Encoding | ⬜ | — |
 | 34 | BetHouse | State / Randomness | ⬜ | — |
 | 35 | EllipticToken | Cryptography (Elliptic Curve) | ⬜ | — |
@@ -98,3 +98,5 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 - Custom Error Spoofing — `try/catch` origin blindness, `INotifyable` callback exploitation
 - Calldata Manipulation — ABI dynamic-type offset forgery, split modifier/call read paths
 - Assembly Type Confusion — `calldataload` 32-byte word bypass of Solidity type boundaries
+- Staking Accounting — CEI violation in ERC-20 staking, unchecked `transferFrom` return, phantom ETH inflation via non-receivable attacker contract
+- ECDSA Signature Malleability — raw `ecrecover` without `s < n/2` enforcement, malleable `(r, n-s, v')` counterpart bypasses `usedSignatures` blocklist
