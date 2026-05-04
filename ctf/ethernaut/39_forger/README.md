@@ -1,6 +1,6 @@
 # Level 39: Forger
 
-**Target:** [Forger.sol](https://github.com/OpenZeppelin/ethernaut/blob/master/contracts/src/levels/Forger.sol)
+**Target:** [Forger.sol](./Forger.sol)
 **Exploit Script:** [exploitScript.s.sol](./exploitScript.s.sol)
 
 ## Vulnerability

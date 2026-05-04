@@ -1,6 +1,6 @@
 # Level 38: UniqueNFT
 
-**Target:** [UniqueNFT.sol](https://github.com/OpenZeppelin/ethernaut/blob/master/contracts/src/levels/UniqueNFT.sol)
+**Target:** [UniqueNFT.sol](./UniqueNFT.sol)
 **Exploit:** [exploit.sol](./exploit.sol)
 
 ## Vulnerability
