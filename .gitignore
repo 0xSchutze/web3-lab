@@ -8,3 +8,6 @@ broadcast/
 foundry.lock
 
 .env
+
+node_modules/
+venv/
