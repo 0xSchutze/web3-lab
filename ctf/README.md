@@ -6,8 +6,8 @@ Hands-on exploit development through Capture The Flag (CTF) challenges and vulne
 
 | Platform | Description | Status |
 |----------|-------------|--------|
-| [Ethernaut](./ethernaut/) | OpenZeppelin's wargame — 29 levels covering core smart contract vulnerability patterns | In Progress |
-| Valves Security | 372 challenges across 19 categories, derived from 50,000 real audit findings. Solved in browser. | Not Started |
+| [Ethernaut](./ethernaut/) | OpenZeppelin's wargame — 40 levels covering core smart contract vulnerability patterns | Completed (40/40) |
+| Valves Security | 372 challenges across 19 categories, derived from 50,000 real audit findings. Solved in browser. | In Progress |
 | [Damn Vulnerable DeFi](./damn-vulnerable-defi/) | 18 DeFi-specific exploit scenarios: flash loans, oracle manipulation, governance attacks | Not Started |
 
 ## Repository Structure

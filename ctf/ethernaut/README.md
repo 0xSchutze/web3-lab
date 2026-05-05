@@ -67,14 +67,14 @@ Challenges solved via browser console only (no Foundry exploit needed) will cont
 | 30 | [Higher Order](./30_higher_order/) | Assembly Type Confusion | ✅ | [Notes](./30_higher_order/README.md) |
 | 31 | [Stake](./31_stake/) | Staking Accounting / CEI Violation | ✅ | [Notes](./31_stake/README.md) |
 | 32 | [Impersonator](./32_impersonator/) | ECDSA Signature Malleability | ✅ | [Notes](./32_impersonator/README.md) |
-| 33 | MagicAnimalCarousel | Data Packing / Encoding | ⬜ | — |
-| 34 | BetHouse | State / Randomness | ⬜ | — |
-| 35 | EllipticToken | Cryptography (Elliptic Curve) | ⬜ | — |
-| 36 | ImpersonatorTwo | Signature / Auth Bypass v2 | ⬜ | — |
-| 37 | Cashback | DeFi Logic Error / Drain | ⬜ | — |
-| 38 | UniqueNFT | ERC721 Standard Abuse | ⬜ | — |
-| 39 | Forger | Hash Collision / Forgery | ⬜ | — |
-| 40 | NotOptimisticPortal | L2 Cross-Chain Bridge | ⬜ | — |
+| 33 | [MagicAnimalCarousel](./33_magic_animal_carousel/) | Data Packing / Encoding | ✅ | [Notes](./33_magic_animal_carousel/README.md) |
+| 34 | [BetHouse](./34_bet_house/) | State / Randomness | ✅ | [Notes](./34_bet_house/README.md) |
+| 35 | [EllipticToken](./35_elliptic_token/) | Cryptography (Elliptic Curve) | ✅ | [Notes](./35_elliptic_token/README.md) |
+| 36 | [Cashback](./36_cashback/) | DeFi Logic Error / Drain | ✅ | [Notes](./36_cashback/README.md) |
+| 37 | [ImpersonatorTwo](./37_impersonator_two/) | ECDSA Nonce Reuse | ✅ | [Notes](./37_impersonator_two/README.md) |
+| 38 | [UniqueNFT](./38_unique_nft/) | EIP-7702 Bypass & CEI Reentrancy | ✅ | [Notes](./38_unique_nft/README.md) |
+| 39 | [Forger](./39_forger/) | EIP-2098 Compact Sigs & Hash Malleability | ✅ | [Notes](./39_forger/README.md) |
+| 40 | [NotOptimisticPortal](./40_not_optimistic_portal/) | Function Selector Collision & MPT State Root Forgery | ✅ | [Notes](./40_not_optimistic_portal/README.md) |
 
 ## Tools Used
 
