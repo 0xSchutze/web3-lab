@@ -1,8 +1,6 @@
 # DeFi Fundamentals (Core Architecture)
 
-Welcome to the Advanced Web3 Engineering section. While "Solidity Basics" covers the syntax of the language, **DeFi Fundamentals** covers the core mathematical algorithms and smart contract design patterns that power multi-billion dollar protocols like Uniswap, Aave, and Yearn Finance.
-
-These are the "Load-Bearing Pillars" of Decentralized Finance.
+While "Solidity Basics" covers the syntax of the language, **DeFi Fundamentals** covers the core mathematical algorithms and smart contract design patterns that are commonly used across Decentralized Finance.
 
 ## Topics
 

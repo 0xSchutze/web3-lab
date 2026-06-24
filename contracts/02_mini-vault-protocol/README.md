@@ -139,11 +139,11 @@ If you modify the smart contracts and deploy your own versions to a network (lik
 
 ---
 
-## Architecture Trade-offs & Frontend Integration
+## Architecture Trade-offs & Limitations
 
-**1. One-Way Factory Pattern (Gas Optimization)**: The `VaultFactory` tracks the initial deployer of each `Vault`, but deliberately does **not** track ownership transfers (`transferOwnership`) done directly on the `Vault` contract. This 1-way relationship saves significant gas during transfers. 
+**1. Factory State Inconsistency**: The `VaultFactory` tracks the initial deployer of each `Vault`, but does not track ownership transfers (`transferOwnership`) done directly on the `Vault` contract. This means the Factory's internal mapping becomes outdated upon transfer.
 
-**2. Context Switcher (Frontend Solution)**: Because the `VaultFactory` does not track secondary markets or transfers, the `Mini Vault Protocol` includes a custom **Vanilla JS / GSAP Frontend** that acts as a decentralized interface. The UI features a "Context Switcher," allowing users to load any Vault address directly. The Frontend independently reads the chain to verify the connected user's current role (`Owner`, `Manager`, or `Guest`) and dynamically paints the correct authorization UI, bypassing the Factory's outdated mapping.
+**2. Frontend Workaround**: Because the `VaultFactory` state is not updated on secondary transfers, the included frontend requires users to manually input the Vault address they want to load. The frontend independently reads the chain to verify the connected user's role (`Owner`, `Manager`, or `Guest`), working around the Factory's incomplete state tracking.
 
 ---
 

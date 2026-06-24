@@ -6,7 +6,7 @@ Hands-on exploit development through Capture The Flag (CTF) challenges and vulne
 
 | Platform | Description | Status |
 |----------|-------------|--------|
-| [Ethernaut](./ethernaut/) | OpenZeppelin's wargame — 40 levels covering core smart contract vulnerability patterns | Completed (40/40) |
+| [Ethernaut](./ethernaut/) | OpenZeppelin's wargame — 40 levels covering core smart contract vulnerability patterns | Completed |
 
 ## Repository Structure
 
