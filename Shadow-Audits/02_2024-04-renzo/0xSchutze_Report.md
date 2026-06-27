@@ -120,3 +120,27 @@ Below is the core exploit execution demonstrating the profit extraction:
         // 4. Assert: Alice deposited 10 stETH (worth 10 ETH) but successfully extracted >12 ETH.
         assertGt(finalBalance, 12 ether, "Alice extracted value from the protocol");
 ```
+
+### [H-01] ETH permanently locked for Smart Contract Wallets due to .transfer() gas limit
+
+**Description & Business Impact:**
+In `WithdrawQueue.sol`, the `claim()` function distributes queued ETH back to users utilizing Solidity's `.transfer()` method. The `.transfer()` function forwards a hardcoded EVM stipend of strictly 2300 gas. While this is sufficient for an Externally Owned Account (EOA) to receive funds, smart contract wallets (e.g., Gnosis Safe, Argent, or custom multisigs) inherently consume more gas in their `receive()` functions for basic proxy delegation, event emissions, or cold storage reads (which cost 2100 gas alone). 
+Because the claim logic rigidly enforces that `msg.sender` must be the original withdrawer, smart contract wallets cannot redirect their claims to an EOA. This results in an unbypassable, native Out-Of-Gas (OOG) revert on every claim attempt. All ETH requested by smart contract wallets becomes permanently locked in the protocol.
+
+**Retrospective / Missed Vector:**
+I didn't miss the `.transfer()` call, and I was fully aware of its 2300 gas limit. My mistake was a pure threat modeling failure regarding `msg.sender`. I assumed the recipient was either an EOA (0 gas to receive) or a custom DeFi vault with an empty fallback. I completely ignored the reality that retail users now widely use Smart Contract Wallets like Gnosis Safe or Argent. These wallets require gas for proxy routing, state updates, or basic logging upon receiving ETH. As a concrete example, if we look at the [Gnosis MultiSigWallet](https://github.com/gnosis/MultiSigWallet/blob/90639984c960d281bed3e0a5d56dd4adcb9407c4/contracts/MultiSigWallet.sol#L94-L100), its fallback function emits a `Deposit` event. Emitting that event alone is enough to instantly exhaust the 2300 stipend and trigger an OOG revert. I read the EVM mechanics correctly, but I modeled the user actor poorly.
+
+**Proof of Concept (Foundry):**
+The complete executable PoC can be found in [`PoCs/04_Renzo_H01_PoC.t.sol`](./PoCs/04_Renzo_H01_PoC.t.sol).
+Below is the core exploit execution demonstrating the unavoidable native EVM Out-Of-Gas error for a smart wallet:
+
+```solidity
+        // .transfer() sends only 2300 gas. Event emission (LOG3 ~1500 gas) +
+        // SSTORE for txHistory.push (~20000 gas) far exceeds the stipend.
+        try withdrawQueue.claim(0) {
+            fail("claim() should have reverted - wallet receive() exceeds 2300 gas stipend");
+        } catch (bytes memory returnData) {
+            // Native OOG produces empty returnData (0x)
+            assertTrue(returnData.length == 0, "Expected native EVM OutOfGas (empty returnData)");
+        }
+```
