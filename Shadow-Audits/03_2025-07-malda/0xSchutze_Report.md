@@ -49,3 +49,41 @@ While reviewing `EverclearBridge.sol`, I noticed the low-level data slicing into
         // Prepend a dummy 4-byte selector to bypass _decodeIntent slicing
         bytes memory encodedMessage = abi.encodePacked(bytes4(0x7ddd19ca), payload);
 ```
+
+---
+
+### [M-15] If Across Bridging fails, all funds intended for bridging will become locked
+**Description & Business Impact:**
+The `AcrossBridge._depositV3Now` function calls `IAcrossSpokePoolV3.depositV3Now()` with `msg.sender` (the `Rebalancer` contract) as the `depositor` parameter. In the Across V3 protocol, the `depositor` address is the designated recipient for refunds when a cross-chain fill fails (e.g., due to relayer liquidity shortage, fill deadline expiration, or token mismatch on the destination chain).
+
+When the destination-chain delivery reverts, Across refunds the locked tokens on the source chain directly to the `depositor` address — the `Rebalancer` contract. However, the `Rebalancer` contract contains no `sweep()`, `rescue()`, `withdraw()`, or any other mechanism to extract ERC20 tokens sent directly to it. It can only interact with market liquidity through `extractForRebalancing`, not recover arbitrary token balances.
+
+**Business Impact:**
+All funds involved in any failed cross-chain rebalancing operation via AcrossBridge are permanently and irrecoverably locked inside the Rebalancer contract. Given that rebalancing operations move protocol-owned liquidity (potentially thousands of ETH or millions in stablecoins per transaction), a single failed bridge operation can result in catastrophic, unrecoverable loss of protocol funds.
+
+**Retrospective / Missed Vector:**
+I did not consider what happens if the transaction reverts on the destination chain; the failure state did not cross my mind. Consequently, I did not check the refund routing and missed that refunded assets are returned to the Rebalancer, which has no sweep mechanism, permanently locking them.
+
+**Proof of Concept (Foundry):**
+**Full Executable PoC:** [02_Malda_M15_PoC.t.sol](PoCs/02_Malda_M15_PoC.t.sol)
+
+This PoC implements a full multi-chain simulation (Linea ↔ Base) with three custom contracts:
+- `SpokePool`: Simulates the Across V3 SpokePool on both chains (deposit, delivery, refund)
+- `SimulateOffChainBot`: Replaces off-chain relayer logic with deterministic event-driven routing
+- The test triggers a single `rebalancer.sendMsg()` call that cascades through the entire flow:
+
+```solidity
+    // Act — A single sendMsg triggers the entire cross-chain flow:
+    // Linea Rebalancer -> Linea AcrossBridge -> Linea SpokePool (deposit + lock)
+    // -> Off-chain Bot -> Base SpokePool (delivery attempt with wrong token -> revert)
+    // -> Off-chain Bot -> Linea SpokePool (refund to depositor = Rebalancer)
+    vm.prank(address(simulateOffChainBot));
+    rebalancerLinea.sendMsg(address(acrossBridgeLinea), address(mWethHost), 5000e18, sendMsgFinalMessage);
+
+    // Assert — 5000 WETH is now trapped inside the Rebalancer with no way to extract it.
+    assertEq(
+        IERC20(address(weth)).balanceOf(address(rebalancerLinea)),
+        5000e18,
+        "Refunded tokens permanently locked in Rebalancer"
+    );
+```
