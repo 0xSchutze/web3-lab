@@ -87,3 +87,72 @@ This PoC implements a full multi-chain simulation (Linea ↔ Base) with three cu
         "Refunded tokens permanently locked in Rebalancer"
     );
 ```
+
+---
+
+### [M-06] EverclearBridge does not pull tokens from the Rebalancer, causing all rebalancing operations to fail
+**Description & Business Impact:**
+The `EverclearBridge.sendMsg` function is responsible for receiving rebalancing tokens from the `Rebalancer` contract and passing them to the Everclear `FeeAdapter.newIntent()` function to initiate a cross-chain transfer. However, the `sendMsg` implementation completely omits the critical step of pulling the `_token` from the `Rebalancer` via `transferFrom()`.
+
+Because the bridge never receives the tokens, its internal balance remains zero. Consequently, when the function attempts to either return slippage via `IERC20(_token).safeTransfer(_market, toReturn)` or when the Everclear `FeeAdapter` attempts to pull the tokens for intent creation, the operation will inevitably revert with an `ERC20InsufficientBalance` error.
+
+**Business Impact:**
+The integration with the Everclear protocol is completely broken. Any attempt to use `EverclearBridge` for cross-chain rebalancing will result in a 100% revert rate (Denial of Service). Since bridging is a core mechanism for maintaining cross-chain liquidity health, this prevents the protocol from moving assets effectively when using Everclear.
+
+**Retrospective / Missed Vector:**
+I misread the code. I saw the `safeTransfer` used for the slippage refund and incorrectly assumed it was a `transferFrom` pulling core funds from the market. Because of this error, I missed that the bridge never actually extracts `params.amount` from the Rebalancer, guaranteeing a revert.
+
+**Proof of Concept (Foundry):**
+**Full Executable PoC:** [03_Malda_M06_PoC.t.sol](PoCs/03_Malda_M06_PoC.t.sol)
+
+The PoC contains two distinct tests proving that the bridge is broken under all conditions:
+1. `test_M06_DoS_WithSlippageRefund()`: Reverts immediately at the `safeTransfer` step if the extracted amount is greater than the params amount.
+2. `test_M06_DoS_WithoutSlippage()`: Reverts at the `transferFrom` step inside the `FeeAdapter` when there is no slippage refund.
+
+```solidity
+    // Act & Assert
+    // We set extractedAmount to 1000e18, matching params.amount exactly.
+    // The slippage logic is skipped, but FeeAdapter.newIntent() will attempt to pull 1000e18.
+    // It will revert with ERC20InsufficientBalance because the bridge holds 0 WETH.
+    vm.expectRevert();
+    rebalancer.sendMsg(address(everclearBridge), address(mWethHost), 1000e18, exploitMessage);
+```
+
+---
+
+### [M-04] Blacklist can be completely bypassed on outHere endpoint in mTokenGateway
+**Description & Business Impact:**
+The `mTokenGateway.outHere` function verifies that both the `msg.sender` and the `receiver` parameter are not blacklisted via the `ifNotBlacklisted` modifier. However, inside the internal `_outHere` function, the `receiver` parameter is explicitly overwritten with the original `_sender` (the user who supplied the funds on the source chain) on line 286: `receiver = _sender;`.
+
+Furthermore, the `_checkSender` function allows an unprivileged caller to execute the withdrawal on behalf of the original `_sender` if the original `_sender` has delegated authority to them via `updateAllowedCallerStatus()`. Critically, `updateAllowedCallerStatus()` does not check if `msg.sender` is blacklisted.
+
+Therefore, a blacklisted user can easily bypass the modifiers by granting `allowedCallers` status to a secondary, clean wallet. The clean wallet then calls `outHere`. Both modifiers pass successfully, but the funds are transferred directly to the blacklisted user's address because `receiver` is overwritten with the blacklisted `_sender`.
+
+**Business Impact:**
+The entire blacklist mechanism on the withdrawal flow is completely ineffective. Malicious actors, OFAC-sanctioned addresses, or compromised wallets that are explicitly flagged by the protocol's Guardian can still extract their funds at will by proxying the transaction through a clean address.
+
+**Retrospective / Missed Vector:**
+While analyzing `mTokenGateway.sol`, I specifically reviewed the `updateAllowedCallerStatus` mechanism and the access modifiers. However, I analyzed these components in isolation. I failed to connect the `allowedCallers` delegation feature with the `outHere` withdrawal endpoint. Because `outHere` overwrites the `receiver` parameter internally, a blacklisted user can simply use `allowedCallers` to authorize a clean address to execute the withdrawal on their behalf, completely bypassing the `ifNotBlacklisted` checks. I read the code, but I did not simulate the attacker's execution path.
+
+**Proof of Concept (Foundry):**
+**Full Executable PoC:** [04_Malda_M04_PoC.t.sol](PoCs/04_Malda_M04_PoC.t.sol)
+
+The PoC demonstrates an unprivileged bypass where a blacklisted Alice delegates to a clean wallet to extract her funds:
+
+```solidity
+    // 4. Exploit (Arrange): Alice authorizes her secondary clean wallet
+    // Because updateAllowedCallerStatus does not check if msg.sender is blacklisted!
+    vm.prank(alice);
+    mWethExtension.updateAllowedCallerStatus(cleanWallet, true);
+
+    // 5. Exploit (Act): Clean wallet executes the withdrawal on behalf of Alice
+    vm.prank(cleanWallet);
+    mWethExtension.outHere(journalData, "", amountArray, cleanWallet);  
+
+    // 6. Assert: Alice successfully bypassed the blacklist and received her funds back
+    assertEq(
+        IERC20(address(weth)).balanceOf(alice),
+        1000e18,
+        "Blacklisted user successfully extracted funds via proxy"
+    );
+```

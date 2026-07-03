@@ -26,4 +26,4 @@ Each audit directory contains:
 |----------|--------|------------|--------|
 | [Ethena Labs](./01_2024-11-Ethena) | Code4rena | Access Control, Proxy Upgrades | Completed |
 | [Renzo Protocol](./02_2024-04-renzo) | Code4rena | EVM Gas Mechanics, Yul/Assembly, Oracle Arbitrage | Completed |
-| [Malda](./03_2025-07-malda) | Sherlock | Cross-Chain Bridges, Lending Accounting, Replay Attacks | In Progress |
+| [Malda](./03_2025-07-malda) | Sherlock | Cross-Chain Bridges, Lending Accounting, Replay Attacks | Completed |
